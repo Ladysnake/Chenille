@@ -1,0 +1,12 @@
+[versions]
+licenser = "0.6.1"
+loom = "0.11-SNAPSHOT"
+jgit = "[6.0.0,7.0.0)"
+
+[libraries]
+licenser = { module = "gradle.plugin.org.cadixdev.gradle:licenser", version.ref = "licenser" }
+loom = { module = "net.fabricmc:fabric-loom", version.ref = "loom" }
+jgit = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit"}
+
+[plugins]
+licenser = { id = "org.cadixdev.licenser", version.ref = "licenser" }

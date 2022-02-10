@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.5.10"
+    groovy
     java
     `java-gradle-plugin`
     `maven-publish`
@@ -21,6 +22,7 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
     implementation(gradleApi())
+    implementation(libs.cursegradle)
     implementation(libs.licenser)
     implementation(libs.loom)
     implementation(libs.jgit)

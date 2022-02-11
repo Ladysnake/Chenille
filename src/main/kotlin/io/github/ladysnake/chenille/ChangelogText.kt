@@ -1,7 +1,6 @@
 package io.github.ladysnake.chenille
 
 import java.io.IOException
-import java.lang.IllegalStateException
 import java.nio.file.Path
 import kotlin.io.path.absolute
 import kotlin.io.path.createDirectories
@@ -23,27 +22,25 @@ class ChangelogText(private val changelogFile: Path, currentVersion: String, cha
                 changelogFile.createFile()
                 changelogFile.writeText(
                     """
-                        ------------------------------------------------------
-                        Version $currentVersion
-                        ------------------------------------------------------
-                        Additions
-                        - None
-
-                        Changes
-                        - None
-
-                        Bug Fixes
-                        - None
-
-                        """.trimIndent()
+                        |------------------------------------------------------
+                        |Version $currentVersion
+                        |------------------------------------------------------
+                        |Additions
+                        |- None
+                        |
+                        |Changes
+                        |- None
+                        |
+                        |Bug Fixes
+                        |- None
+                        |
+                    """.trimMargin()
                 )
-
-                return@lazy ""
             } catch (e: IOException) {
                 println("Unable to write changelog file: " + e.message)
                 e.printStackTrace()
-                return@lazy ""
             }
+            return@lazy ""
         }
         val changelog = changelogFile.useLines { lines ->
             sequence {
@@ -58,15 +55,17 @@ class ChangelogText(private val changelogFile: Path, currentVersion: String, cha
                 ) throw IllegalStateException("Malformed changelog: expected separator \"${separator}\" on line 3")
                 if (!iterator.hasNext()) throw IllegalStateException("Malformed changelog: expected description starting at line 4")
                 yieldAll(iterator)
-            }
-        }.takeWhile { line -> !line.startsWith(separator) }
+            }.takeWhile { line ->
+                !line.startsWith(separator)
+            }.joinToString("\n|")
+        }
 
         return@lazy """
-            ${changelog.joinToString("\n")}
-
-
-             see full changelog [here]($changelogBaseUrl/$currentVersion/changelog.md "Changelog")
-            """.trimIndent()
+            |$changelog
+            |
+            |
+            | see full changelog [here]($changelogBaseUrl/$currentVersion/changelog.md "Changelog")
+            """.trimMargin()
     }
 
     override fun toString(): String {

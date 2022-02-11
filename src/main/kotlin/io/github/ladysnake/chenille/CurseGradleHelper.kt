@@ -7,6 +7,14 @@ import com.matthewprenger.cursegradle.CurseRelation
 import groovy.lang.Closure
 
 internal class CurseGradleHelper(private val project: ChenilleProject) {
+    private inline fun CurseRelation.applyRelation(key: String, action: CurseRelation.(String) -> Unit) {
+        if (project.hasProperty(key)) {
+            project.properties[key].toString().split(";").forEach { slug ->
+                action(slug.trim())
+            }
+        }
+    }
+
     fun configureDefaults() {
         project.extensions.configure(CurseExtension::class.java) { ext ->
             ext.apiKey = project.findProperty("curseforge_key") ?: "".also {
@@ -40,18 +48,11 @@ internal class CurseGradleHelper(private val project: ChenilleProject) {
                             project.hasProperty("cf_includes")
                         ) {
                             artifact.relations { relations: CurseRelation ->
-                                fun applyRelation(key: String, op: CurseRelation.(String) -> Unit) {
-                                    if (project.hasProperty(key)) {
-                                        project.properties[key].toString().split(";").forEach { slug ->
-                                            relations.op(slug.trim())
-                                        }
-                                    }
-                                }
-                                applyRelation("cf_requirements") { requiredDependency(it) }
-                                applyRelation("cf_optionals") { optionalDependency(it) }
-                                applyRelation("cf_embeddeds") { optionalDependency(it) }
-                                applyRelation("cf_tools") { tool(it) }
-                                applyRelation("cf_incompatibles") { incompatible(it) }
+                                relations.applyRelation("cf_requirements") { requiredDependency(it) }
+                                relations.applyRelation("cf_optionals") { optionalDependency(it) }
+                                relations.applyRelation("cf_embeddeds") { embeddedLibrary(it) }
+                                relations.applyRelation("cf_tools") { tool(it) }
+                                relations.applyRelation("cf_incompatibles") { incompatible(it) }
                             }
                         }
                     }
@@ -67,16 +68,16 @@ internal class CurseGradleHelper(private val project: ChenilleProject) {
 
     private fun CurseExtension.project(action: (CurseProject) -> Unit) = project(object : Closure<Unit>(this, this) {
         @Suppress("unused") // to be called dynamically by Groovy
-        fun doCall() = action(delegate as CurseProject)
+        fun doCall(proj: CurseProject) = action(proj)
     })
 
     private fun CurseProject.mainArtifact(artifact: Any, action: (CurseArtifact) -> Unit) = mainArtifact(artifact, object: Closure<Unit>(this, this) {
         @Suppress("unused") // to be called dynamically by Groovy
-        fun doCall() = action(delegate as CurseArtifact)
+        fun doCall(artif: CurseArtifact) = action(artif)
     })
 
     private fun CurseArtifact.relations(action: (CurseRelation) -> Unit) = relations(object: Closure<Unit>(this, this) {
         @Suppress("unused") // to be called dynamically by Groovy
-        fun doCall() = action(delegate as CurseRelation)
+        fun doCall(rel: CurseRelation) = action(rel)
     })
 }

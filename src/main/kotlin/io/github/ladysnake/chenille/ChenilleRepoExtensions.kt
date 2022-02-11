@@ -1,5 +1,7 @@
 @file:JvmName("ChenilleRepoExtensions")
 
+package io.github.ladysnake.chenille
+
 import org.gradle.api.artifacts.dsl.RepositoryHandler
 
 fun RepositoryHandler.cursemaven() {

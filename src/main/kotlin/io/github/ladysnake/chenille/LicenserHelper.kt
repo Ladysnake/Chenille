@@ -17,7 +17,7 @@ internal class LicenserHelper(private val project: ChenilleProject) {
                 it.newLine.set(false)
                 it.properties { ext ->
                     val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-                    val firstYear = project.git.firstCommit?.let { firstCommit ->
+                    val firstYear = project.git?.firstCommit?.let { firstCommit ->
                         Calendar.getInstance().apply { timeInMillis = firstCommit.commitTime.toLong() }
                             .get(Calendar.YEAR)
                     }

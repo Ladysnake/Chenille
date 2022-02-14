@@ -1,9 +1,13 @@
 package io.github.ladysnake.chenille
 
+import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.errors.RepositoryNotFoundException
 import org.gradle.api.Project
 
 class ChenilleProject(private val project: Project): Project by project {
-    val git by lazy { JGitWrapper(rootDir) }
+    val git: JGitWrapper? by lazy {
+        try { JGitWrapper(Git.open(rootDir)) } catch (e: RepositoryNotFoundException) { null }
+    }
     val changelog = ChangelogText(
         project.file("changelog.md").toPath(),
         currentVersion = project.properties["mod_version"].toString(),

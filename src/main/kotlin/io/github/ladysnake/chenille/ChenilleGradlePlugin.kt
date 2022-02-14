@@ -6,6 +6,9 @@ import org.gradle.api.UnknownTaskException
 import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.tasks.TaskProvider
+import java.lang.reflect.Modifier
+import java.util.*
+import java.util.stream.Collectors
 
 @Suppress("unused") // Plugin entrypoint duh
 class ChenilleGradlePlugin : Plugin<Project> {
@@ -54,13 +57,11 @@ class ChenilleGradlePlugin : Plugin<Project> {
     }
 
     private fun setupRepositoryExtensions(project: ChenilleProject) {
-        val repoExts = mapOf<String, RepositoryHandler.() -> Unit>(
-            "cursemaven" to RepositoryHandler::cursemaven,
-            "jitpack" to RepositoryHandler::jitpack,
-            "ladysnake" to RepositoryHandler::ladysnake,
-            "lucko" to RepositoryHandler::lucko,
-            "terraformers" to RepositoryHandler::terraformers
-        )
+        val repoExts: Map<String, RepositoryHandler.() -> Unit> = Arrays.stream(
+            Class.forName("io.github.ladysnake.chenille.ChenilleRepoExtensions").declaredMethods
+        ).filter {
+            Modifier.isPublic(it.modifiers)
+        }.collect(Collectors.toMap({ it.name }, { m -> { h: RepositoryHandler -> m.invoke(h)}}))
 
         Class.forName("io.github.ladysnake.chenille.ChenilleGroovifier")
             .getMethod("setupRepositoryExtensions", Project::class.java, Map::class.java)(null, project, repoExts)

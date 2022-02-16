@@ -1,3 +1,5 @@
+import java.util.*
+
 plugins {
     kotlin("jvm") version "1.5.10"
     groovy
@@ -30,6 +32,20 @@ dependencies {
     implementation(libs.jgit)
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+}
+
+license {
+    setHeader(file("src/main/resources/license_headers/LGPL.txt"))
+    newLine.set(false)
+    properties {
+        val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+        val firstYear = 2022
+        val year = if (currentYear == firstYear) currentYear else "$firstYear-$currentYear"
+        ext["year"] = year
+        ext["projectDisplayName"] = project.properties["display_name"]
+        ext["projectOwners"] = project.properties["owners"]
+        ext["gplVersion"] = "3"
+    }
 }
 
 java {

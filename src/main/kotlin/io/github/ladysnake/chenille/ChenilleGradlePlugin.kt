@@ -2,6 +2,7 @@ package io.github.ladysnake.chenille
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.UnknownTaskException
 import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.artifacts.dsl.RepositoryHandler
@@ -31,7 +32,7 @@ class ChenilleGradlePlugin : Plugin<Project> {
     private fun configureReleaseTask(project: ChenilleProject) {
         val checkGitStatus: TaskProvider<CheckGitTask> =
             project.tasks.register("checkGitStatus", CheckGitTask::class.java, project)
-        val release = project.tasks.register("release") {
+        val release: TaskProvider<Task> = project.tasks.register("release") {
             it.group = "publishing"
             it.description = "Releases a new version to Maven, Github, Curseforge and Modrinth"
             it.dependsOn(checkGitStatus)
@@ -39,10 +40,8 @@ class ChenilleGradlePlugin : Plugin<Project> {
 
         fun configureReleaseSubtask(name: String) {
             try {
-                project.tasks.named(name) { subtask ->
-                    subtask.mustRunAfter(checkGitStatus)
-                    release.configure { it.dependsOn(subtask) }
-                }
+                val subtask = project.tasks.named(name) { it.mustRunAfter(checkGitStatus) }
+                release.configure { it.dependsOn(subtask) }
             } catch (_: UnknownTaskException) {
                 release.configure {
                     it.doFirst { project.logger.warn("Task $name not found; skipping it for release") }

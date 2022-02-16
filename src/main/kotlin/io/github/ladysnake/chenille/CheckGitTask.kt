@@ -2,8 +2,9 @@ package io.github.ladysnake.chenille
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+import javax.inject.Inject
 
-class CheckGitTask(private val project: ChenilleProject): DefaultTask() {
+abstract class CheckGitTask @Inject constructor(private val project: ChenilleProject): DefaultTask() {
     companion object {
         val versionBranchRegex = """\d+\.\d+(?>\.\d+)?""".toRegex()
     }

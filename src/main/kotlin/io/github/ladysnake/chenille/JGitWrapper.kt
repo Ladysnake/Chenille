@@ -2,8 +2,10 @@ package io.github.ladysnake.chenille
 
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.api.Status
+import org.eclipse.jgit.api.errors.NoHeadException
 import org.eclipse.jgit.lib.BranchTrackingStatus
 import org.eclipse.jgit.lib.Constants
+import org.eclipse.jgit.lib.ObjectId
 import org.eclipse.jgit.lib.Ref
 import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.revwalk.RevCommit
@@ -16,6 +18,8 @@ class JGitWrapper(val jgit: Git) {
     val firstCommit: RevCommit by lazy { RevWalk(repository).use {
         it.sort(RevSort.COMMIT_TIME_DESC, true)
         it.sort(RevSort.REVERSE, true)
+        val headId: ObjectId = repository.resolve(Constants.HEAD) ?: throw NoHeadException("No repository head found")
+        it.markStart(it.lookupCommit(headId))
         it.next()
     }}
 

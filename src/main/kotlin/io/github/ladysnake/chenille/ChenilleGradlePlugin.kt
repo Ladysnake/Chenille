@@ -17,6 +17,8 @@
  */
 package io.github.ladysnake.chenille
 
+import io.github.ladysnake.chenille.api.ChenilleGradleExtension
+import io.github.ladysnake.chenille.api.RepositoryHandlerChenilleExtension
 import io.github.ladysnake.chenille.helpers.ArtifactoryHelper
 import io.github.ladysnake.chenille.helpers.CurseGradleHelper
 import io.github.ladysnake.chenille.helpers.GithubReleaseHelper
@@ -44,6 +46,7 @@ class ChenilleGradlePlugin : Plugin<Project> {
         target.plugins.findPlugin("org.cadixdev.licenser")?.run { LicenserHelper(project).configureDefaults() }
         target.plugins.findPlugin("com.github.breadmoirai.github-release")?.run { GithubReleaseHelper(project).configureDefaults() }
         target.plugins.findPlugin("com.matthewprenger.cursegradle")?.run { CurseGradleHelper(project).configureDefaults() }
+        project.extensions.create(ChenilleGradleExtension::class.java, "chenille", ChenilleGradleExtensionImpl::class.java, project)
 
         configureReleaseTask(project)
 
@@ -79,13 +82,15 @@ class ChenilleGradlePlugin : Plugin<Project> {
 
     private fun setupRepositoryExtensions(project: Project) {
         val repoExts: Map<String, Function<RepositoryHandler, Unit>> = Arrays.stream(
-            Class.forName("io.github.ladysnake.chenille.ChenilleRepoExtensions").declaredMethods
+            Class.forName("io.github.ladysnake.chenille.api.ChenilleRepoExtensions").declaredMethods
         ).filter {
-            Modifier.isPublic(it.modifiers)
+            Modifier.isPublic(it.modifiers) && it.name != "getChenille"
         }.collect(Collectors.toMap({ it.name }, { m -> Function<RepositoryHandler, Unit> { h -> m.invoke(null, h)}}))
 
+        RepositoryHandlerChenilleExtensionImpl.instance = RepositoryHandlerChenilleExtensionImpl(project.repositories, repoExts.values)
+
         Class.forName("io.github.ladysnake.chenille.ChenilleGroovifier")
-            .getMethod("setupRepositoryExtensions", Project::class.java, Map::class.java)(null, project, repoExts)
+            .getMethod("setupRepositoryExtensions", Project::class.java, Map::class.java, RepositoryHandlerChenilleExtension::class.java)(null, project, repoExts, RepositoryHandlerChenilleExtensionImpl.instance)
     }
 
     private fun setupConfigurations(configurations: ConfigurationContainer) {

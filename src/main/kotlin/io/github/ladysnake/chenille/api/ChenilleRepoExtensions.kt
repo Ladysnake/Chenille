@@ -18,9 +18,13 @@
 @file:JvmName("ChenilleRepoExtensions")
 @file:Suppress("unused")
 
-package io.github.ladysnake.chenille
+package io.github.ladysnake.chenille.api
 
+import io.github.ladysnake.chenille.RepositoryHandlerChenilleExtensionImpl
 import org.gradle.api.artifacts.dsl.RepositoryHandler
+
+val RepositoryHandler.chenille: RepositoryHandlerChenilleExtension
+    get() = RepositoryHandlerChenilleExtensionImpl.instance
 
 fun RepositoryHandler.cotton() {
     maven { repo ->

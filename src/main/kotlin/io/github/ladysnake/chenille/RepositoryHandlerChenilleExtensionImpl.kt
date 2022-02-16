@@ -17,22 +17,16 @@
  */
 package io.github.ladysnake.chenille
 
-
 import io.github.ladysnake.chenille.api.RepositoryHandlerChenilleExtension
-import kotlin.Unit
-import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.RepositoryHandler
-
 import java.util.function.Function
 
-@SuppressWarnings('unused') // called through reflection because compilers suck
-class ChenilleGroovifier {
-    static void setupRepositoryExtensions(Project project, Map<String, Function<RepositoryHandler, Unit>> exts, RepositoryHandlerChenilleExtension chenilleExtension) {
-        exts.forEach({name, action ->
-            project.repositories.ext[name] = {
-                action.apply(project.repositories)
-            }
-        })
-        project.repositories.ext["chenille"] = chenilleExtension
+class RepositoryHandlerChenilleExtensionImpl(private val repositories: RepositoryHandler, private val extensions: Collection<Function<RepositoryHandler, Unit>>): RepositoryHandlerChenilleExtension {
+    companion object {
+        lateinit var instance: RepositoryHandlerChenilleExtension
+    }
+
+    override fun defaultRepositories() {
+        extensions.forEach { it.apply(repositories) }
     }
 }

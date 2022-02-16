@@ -30,6 +30,7 @@ dependencies {
     implementation(libs.licenser)
     implementation(libs.loom)
     implementation(libs.jgit)
+    implementation(libs.minotaur)
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }

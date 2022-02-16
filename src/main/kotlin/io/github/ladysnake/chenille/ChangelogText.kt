@@ -17,6 +17,7 @@
  */
 package io.github.ladysnake.chenille
 
+import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.nio.file.Path
 import java.util.concurrent.Callable
@@ -30,9 +31,12 @@ import kotlin.io.path.writeText
 class ChangelogText(private val changelogFile: Path, currentVersion: String, changelogBaseUrl: String): Callable<CharSequence> {
     companion object {
         private const val separator = "---"
+        private val logger = LoggerFactory.getLogger(ChangelogText::class.java)
     }
 
     private val text by lazy {
+        logger.info("Resolving changelog")
+
         if (!changelogFile.exists()) {
             println("No changelog file found, creating one at \"${changelogFile.absolute()}\"")
             try {

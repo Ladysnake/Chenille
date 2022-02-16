@@ -36,7 +36,7 @@ internal class CurseGradleHelper(private val project: ChenilleProject) {
     fun configureDefaults() {
         project.extensions.configure(CurseExtension::class.java) { ext ->
             ext.apiKey = project.findProperty("curseforge_key") ?: "".also {
-                println("Curseforge API Key not configured; please define the 'curseforge_key' property before release")
+                println("Curseforge API Key not configured; please define the 'curseforge_key' user property before release")
             }
 
             if (project.hasProperty("curseforge_id")) {
@@ -79,7 +79,7 @@ internal class CurseGradleHelper(private val project: ChenilleProject) {
                     proj.changelog = project.changelog
                 }
             } else {
-                println("Curseforge Project ID not configured; please set the 'curseforge_id' property before release")
+                println("Curseforge Project ID not configured; please define the 'curseforge_id' project property before release")
             }
         }
     }

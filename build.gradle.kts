@@ -24,6 +24,7 @@ dependencies {
     implementation(gradleApi())
     implementation(libs.artifactory)
     implementation(libs.cursegradle)
+    implementation(libs.githubRelease)
     implementation(libs.licenser)
     implementation(libs.loom)
     implementation(libs.jgit)

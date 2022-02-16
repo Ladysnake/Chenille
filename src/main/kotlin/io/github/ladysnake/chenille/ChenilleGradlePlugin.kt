@@ -2,6 +2,7 @@ package io.github.ladysnake.chenille
 
 import io.github.ladysnake.chenille.helpers.ArtifactoryHelper
 import io.github.ladysnake.chenille.helpers.CurseGradleHelper
+import io.github.ladysnake.chenille.helpers.GithubReleaseHelper
 import io.github.ladysnake.chenille.helpers.LicenserHelper
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -22,9 +23,10 @@ class ChenilleGradlePlugin : Plugin<Project> {
 
         val project = ChenilleProject(target)
 
-        target.plugins.findPlugin("org.cadixdev.licenser")?.run { LicenserHelper(project).configureDefaults() }
-        target.plugins.findPlugin("com.matthewprenger.cursegradle")?.run { CurseGradleHelper(project).configureDefaults() }
         target.plugins.findPlugin("com.jfrog.artifactory")?.run { ArtifactoryHelper(project).configureDefaults() }
+        target.plugins.findPlugin("org.cadixdev.licenser")?.run { LicenserHelper(project).configureDefaults() }
+        target.plugins.findPlugin("com.github.breadmoirai.github-release")?.run { GithubReleaseHelper(project).configureDefaults() }
+        target.plugins.findPlugin("com.matthewprenger.cursegradle")?.run { CurseGradleHelper(project).configureDefaults() }
 
         configureReleaseTask(project)
 

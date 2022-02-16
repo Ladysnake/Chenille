@@ -3,6 +3,7 @@ artifactory = "4.27.1"
 cursegradle = "1.4.0"
 licenser = "0.6.1"
 loom = "0.11-SNAPSHOT"
+githubRelease = "2.2.12"
 jgit = "[6.0.0,7.0.0)"
 
 [libraries]
@@ -11,6 +12,7 @@ cursegradle = { module = "gradle.plugin.com.matthewprenger:CurseGradle", version
 licenser = { module = "gradle.plugin.org.cadixdev.gradle:licenser", version.ref = "licenser" }
 loom = { module = "net.fabricmc:fabric-loom", version.ref = "loom" }
 jgit = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit"}
+githubRelease = { module = "com.github.breadmoirai:github-release", version.ref = "githubRelease" }
 
 [plugins]
 licenser = { id = "org.cadixdev.licenser", version.ref = "licenser" }

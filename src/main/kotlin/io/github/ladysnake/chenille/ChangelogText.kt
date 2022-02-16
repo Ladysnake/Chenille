@@ -2,6 +2,7 @@ package io.github.ladysnake.chenille
 
 import java.io.IOException
 import java.nio.file.Path
+import java.util.concurrent.Callable
 import kotlin.io.path.absolute
 import kotlin.io.path.createDirectories
 import kotlin.io.path.createFile
@@ -9,7 +10,7 @@ import kotlin.io.path.exists
 import kotlin.io.path.useLines
 import kotlin.io.path.writeText
 
-class ChangelogText(private val changelogFile: Path, currentVersion: String, changelogBaseUrl: String) {
+class ChangelogText(private val changelogFile: Path, currentVersion: String, changelogBaseUrl: String): Callable<CharSequence> {
     companion object {
         private const val separator = "---"
     }
@@ -71,4 +72,6 @@ class ChangelogText(private val changelogFile: Path, currentVersion: String, cha
     override fun toString(): String {
         return text
     }
+
+    override fun call(): CharSequence = this.text
 }

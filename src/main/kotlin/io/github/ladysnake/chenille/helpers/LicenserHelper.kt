@@ -1,5 +1,7 @@
-package io.github.ladysnake.chenille
+package io.github.ladysnake.chenille.helpers
 
+import io.github.ladysnake.chenille.ChenilleGradlePlugin
+import io.github.ladysnake.chenille.ChenilleProject
 import org.cadixdev.gradle.licenser.LicenseExtension
 import java.util.*
 

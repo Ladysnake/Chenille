@@ -13,4 +13,5 @@ class ChenilleProject(private val project: Project): Project by project {
         currentVersion = project.properties["mod_version"].toString(),
         changelogBaseUrl = project.properties["changelog_base_url"].toString()
     )
+    fun isLadysnakeProject() = project.group.toString().takeIf { it.contains("ladysnake") || it.contains("onyxstudios") } != null
 }

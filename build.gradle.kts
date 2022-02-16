@@ -22,6 +22,7 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
     implementation(gradleApi())
+    implementation(libs.artifactory)
     implementation(libs.cursegradle)
     implementation(libs.licenser)
     implementation(libs.loom)

@@ -1,5 +1,8 @@
 package io.github.ladysnake.chenille
 
+import io.github.ladysnake.chenille.helpers.ArtifactoryHelper
+import io.github.ladysnake.chenille.helpers.CurseGradleHelper
+import io.github.ladysnake.chenille.helpers.LicenserHelper
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -15,19 +18,18 @@ import java.util.stream.Collectors
 @Suppress("unused") // Plugin entrypoint duh
 class ChenilleGradlePlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        target.plugins.apply("org.cadixdev.licenser")
         target.plugins.apply("fabric-loom")
-        target.plugins.apply("com.matthewprenger.cursegradle")
 
         val project = ChenilleProject(target)
 
+        target.plugins.findPlugin("org.cadixdev.licenser")?.run { LicenserHelper(project).configureDefaults() }
+        target.plugins.findPlugin("com.matthewprenger.cursegradle")?.run { CurseGradleHelper(project).configureDefaults() }
+        target.plugins.findPlugin("com.jfrog.artifactory")?.run { ArtifactoryHelper(project).configureDefaults() }
+
         configureReleaseTask(project)
 
-        LicenserHelper(project).configureDefaults()
-        CurseGradleHelper(project).configureDefaults()
-
         setupConfigurations(project.configurations)
-        setupRepositoryExtensions(project)
+        setupRepositoryExtensions(target)
     }
 
     private fun configureReleaseTask(project: ChenilleProject) {
@@ -56,7 +58,7 @@ class ChenilleGradlePlugin : Plugin<Project> {
         configureReleaseSubtask("modrinth")
     }
 
-    private fun setupRepositoryExtensions(project: ChenilleProject) {
+    private fun setupRepositoryExtensions(project: Project) {
         val repoExts: Map<String, Function<RepositoryHandler, Unit>> = Arrays.stream(
             Class.forName("io.github.ladysnake.chenille.ChenilleRepoExtensions").declaredMethods
         ).filter {

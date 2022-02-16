@@ -9,6 +9,7 @@ import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.tasks.TaskProvider
 import java.lang.reflect.Modifier
 import java.util.*
+import java.util.function.Function
 import java.util.stream.Collectors
 
 @Suppress("unused") // Plugin entrypoint duh
@@ -56,11 +57,11 @@ class ChenilleGradlePlugin : Plugin<Project> {
     }
 
     private fun setupRepositoryExtensions(project: ChenilleProject) {
-        val repoExts: Map<String, RepositoryHandler.() -> Unit> = Arrays.stream(
+        val repoExts: Map<String, Function<RepositoryHandler, Unit>> = Arrays.stream(
             Class.forName("io.github.ladysnake.chenille.ChenilleRepoExtensions").declaredMethods
         ).filter {
             Modifier.isPublic(it.modifiers)
-        }.collect(Collectors.toMap({ it.name }, { m -> { h: RepositoryHandler -> m.invoke(h)}}))
+        }.collect(Collectors.toMap({ it.name }, { m -> Function<RepositoryHandler, Unit> { h -> m.invoke(null, h)}}))
 
         Class.forName("io.github.ladysnake.chenille.ChenilleGroovifier")
             .getMethod("setupRepositoryExtensions", Project::class.java, Map::class.java)(null, project, repoExts)

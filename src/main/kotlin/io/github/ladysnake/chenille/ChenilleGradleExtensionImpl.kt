@@ -17,9 +17,18 @@
  */
 package io.github.ladysnake.chenille
 
+import com.google.common.collect.ImmutableList
 import io.github.ladysnake.chenille.api.ChenilleGradleExtension
 import net.fabricmc.loom.LoomGradleExtension
+import net.fabricmc.loom.configuration.RemappedConfigurationEntry
+import net.fabricmc.loom.util.Constants
+import org.gradle.BuildListener
+import org.gradle.BuildResult
+import org.gradle.api.Project
+import org.gradle.api.initialization.Settings
+import org.gradle.api.invocation.Gradle
 import org.gradle.api.tasks.SourceSetContainer
+import sun.misc.Unsafe
 
 open class ChenilleGradleExtensionImpl(private val project: ChenilleProject): ChenilleGradleExtension {
     override fun configureTestmod() {
@@ -29,6 +38,8 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject): Ch
             testmod.compileClasspath += main.compileClasspath
             testmod.runtimeClasspath += main.runtimeClasspath
         }
+
+        project.dependencies.add("testmodImplementation", main.output)
 
         project.extensions.configure<LoomGradleExtension>("loom") { loom ->
             loom.runs {
@@ -59,6 +70,44 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject): Ch
                     check.dependsOn(project.tasks.named("runGametest"))
                 }
             }
+            val modTestImplementationMapped = loom.createLazyConfiguration("modTestImplementationMapped") { it.isTransitive = false }
+            loom.createLazyConfiguration("modTestImplementation") { modTestImplementation ->
+                val remappedConfigurationEntry = RemappedConfigurationEntry(
+                    modTestImplementation.name,
+                    "testmodImplementation",
+                    true,
+                    true,
+                    RemappedConfigurationEntry.PublishingMode.NONE
+                )
+                assert(modTestImplementationMapped.name == remappedConfigurationEntry.remappedConfiguration)
+                awfulDisgustingHack(project, remappedConfigurationEntry)
+                project.configurations.getByName("testmodCompileClasspath").extendsFrom(modTestImplementationMapped.get())
+                project.configurations.getByName("testmodRuntimeClasspath").extendsFrom(modTestImplementationMapped.get())
+            }
         }
+    }
+
+    private fun awfulDisgustingHack(project: Project, remappedConfigurationEntry: RemappedConfigurationEntry) {
+        val oldModCompileEntries = Constants.MOD_COMPILE_ENTRIES
+        val newModCompileEntries = ImmutableList.builder<RemappedConfigurationEntry>().addAll(oldModCompileEntries).add(remappedConfigurationEntry).build()
+        val zlorg = Unsafe::class.java.getDeclaredField("theUnsafe").also { it.isAccessible = true }[null] as Unsafe
+        val f = Constants::class.java.getField("MOD_COMPILE_ENTRIES")
+        val base = zlorg.staticFieldBase(f)
+        val offset = zlorg.staticFieldOffset(f)
+        assert(zlorg.getObject(base, offset) == oldModCompileEntries)
+        zlorg.putObject(base, offset, newModCompileEntries)
+        assert(zlorg.getObject(base, offset) == newModCompileEntries)
+
+        project.gradle.addListener(object: BuildListener {
+            override fun settingsEvaluated(settings: Settings) {}
+
+            override fun projectsLoaded(gradle: Gradle) {}
+
+            override fun projectsEvaluated(gradle: Gradle) {}
+
+            override fun buildFinished(result: BuildResult) {
+                zlorg.putObject(base, offset, oldModCompileEntries)    // Got to clean up afterward :)
+            }
+        })
     }
 }

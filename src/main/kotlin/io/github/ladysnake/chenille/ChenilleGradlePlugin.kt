@@ -96,17 +96,17 @@ class ChenilleGradlePlugin : Plugin<Project> {
     }
 
     private fun setupConfigurations(configurations: ConfigurationContainer) {
-        configurations.create("modBundledImplementation").apply {
-            configurations.getByName("modImplementation").extendsFrom(this)
-            configurations.getByName("include").extendsFrom(this)
+        configurations.register("modBundledImplementation") {
+            configurations.getByName("modImplementation").extendsFrom(it)
+            configurations.getByName("include").extendsFrom(it)
         }
-        configurations.create("modBundledApi").apply {
-            configurations.getByName("modApi").extendsFrom(this)
-            configurations.getByName("include").extendsFrom(this)
+        configurations.register("modBundledApi") {
+            configurations.getByName("modApi").extendsFrom(it)
+            configurations.getByName("include").extendsFrom(it)
         }
-        configurations.create("modOptionalImplementation").apply {
-            configurations.getByName("modCompileOnly").extendsFrom(this)
-            configurations.getByName("modLocalRuntime").extendsFrom(this)
+        configurations.register("modOptionalImplementation") {
+            configurations.getByName("modCompileOnly").extendsFrom(it)
+            configurations.getByName("modLocalRuntime").extendsFrom(it)
         }
     }
 }

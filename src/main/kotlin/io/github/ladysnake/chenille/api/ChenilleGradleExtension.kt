@@ -17,6 +17,15 @@
  */
 package io.github.ladysnake.chenille.api
 
+import java.net.URL
+
 interface ChenilleGradleExtension {
     fun configureTestmod()
+    var javaVersion: Int
+    var modVersion: String
+    var displayName: String
+    var license: String?
+    var owners: String
+    var github: URL?
+    var changelogUrl: URL?
 }

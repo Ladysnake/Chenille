@@ -28,7 +28,7 @@ import kotlin.io.path.exists
 import kotlin.io.path.useLines
 import kotlin.io.path.writeText
 
-class ChangelogText(private val changelogFile: Path, currentVersion: String, changelogBaseUrl: String): Callable<CharSequence> {
+class ChangelogText(private val changelogFile: Path, project: ChenilleProject): Callable<CharSequence> {
     companion object {
         private const val separator = "---"
         private val logger = LoggerFactory.getLogger(ChangelogText::class.java)
@@ -45,7 +45,7 @@ class ChangelogText(private val changelogFile: Path, currentVersion: String, cha
                 changelogFile.writeText(
                     """
                         |------------------------------------------------------
-                        |Version $currentVersion
+                        |Version ${project.extension.modVersion}
                         |------------------------------------------------------
                         |Additions
                         |- None
@@ -82,12 +82,12 @@ class ChangelogText(private val changelogFile: Path, currentVersion: String, cha
             }.joinToString("\n|")
         }
 
-        return@lazy """
-            |$changelog
-            |
-            |
-            | see full changelog [here]($changelogBaseUrl/$currentVersion/changelog.md "Changelog")
-            """.trimMargin()
+        """
+        |$changelog
+        |
+        |
+        | see full changelog [here](${project.extension.changelogUrl ?: return@lazy changelog} "Changelog")
+        """.trimMargin()
     }
 
     override fun toString(): String {

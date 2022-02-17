@@ -23,8 +23,11 @@ import org.cadixdev.gradle.licenser.LicenseExtension
 import java.util.*
 
 internal class LicenserHelper(private val project: ChenilleProject) {
-    fun configureDefaults() {
-        val license = project.properties["license_header"]?.toString()?.uppercase()
+    fun configure(license: String?) {
+        if (project.plugins.findPlugin("org.cadixdev.licenser") == null) {
+            throw IllegalStateException("'org.cadixdev.licenser' plugin not found, cannot apply license headers")
+        }
+
         if (license != null) {
             project.extensions.configure(LicenseExtension::class.java) {
                 it.header.set(project.provider {
@@ -43,8 +46,8 @@ internal class LicenserHelper(private val project: ChenilleProject) {
                     val year =
                         if (firstYear == null || currentYear == firstYear) currentYear else "$firstYear-$currentYear"
                     ext["year"] = year
-                    ext["projectDisplayName"] = project.properties["display_name"]
-                    ext["projectOwners"] = project.properties["owners"]
+                    ext["projectDisplayName"] = project.extension.displayName
+                    ext["projectOwners"] = project.extension.owners
                     if (license.contains("GPL")) ext["gplVersion"] = project.properties["gpl_version"] ?: "3"
                 }
             }

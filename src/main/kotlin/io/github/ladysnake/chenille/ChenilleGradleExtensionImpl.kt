@@ -19,18 +19,53 @@ package io.github.ladysnake.chenille
 
 import com.google.common.collect.ImmutableList
 import io.github.ladysnake.chenille.api.ChenilleGradleExtension
+import io.github.ladysnake.chenille.helpers.LicenserHelper
 import net.fabricmc.loom.LoomGradleExtension
 import net.fabricmc.loom.configuration.RemappedConfigurationEntry
 import net.fabricmc.loom.util.Constants
+import org.cadixdev.gradle.licenser.LicenseExtension
 import org.gradle.BuildListener
 import org.gradle.BuildResult
 import org.gradle.api.Project
 import org.gradle.api.initialization.Settings
 import org.gradle.api.invocation.Gradle
 import org.gradle.api.tasks.SourceSetContainer
+import org.gradle.api.tasks.compile.JavaCompile
+import org.gradle.configurationcache.extensions.capitalized
 import sun.misc.Unsafe
+import java.net.URL
 
-open class ChenilleGradleExtensionImpl(private val project: ChenilleProject): ChenilleGradleExtension {
+open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : ChenilleGradleExtension {
+    override var javaVersion: Int by defaulted { 16 } withListener { value ->
+        project.tasks.withType(JavaCompile::class.java).configureEach {
+            it.options.release.set(value)
+        }
+    }
+
+    override var modVersion: String by defaulted { project.version.toString() }
+
+    override var license: String? by defaulted<String?> { null } withListener {
+        LicenserHelper(project).configure(it?.uppercase())
+    }
+
+    override var displayName: String by defaulted { project.name.capitalized() } withListener { value ->
+        project.extensions.configure(LicenseExtension::class.java) {
+            it.properties { ext -> ext["projectDisplayName"] = value }
+        }
+    }
+
+    override var owners: String by defaulted {
+        project.group.toString().split('.').last().capitalized()
+    } withListener { value ->
+        project.extensions.configure(LicenseExtension::class.java) {
+            it.properties { ext -> ext["projectOwners"] = value }
+        }
+    }
+
+    override var github: URL? by defaulted { URL("https://github.com/$owners/$displayName") }
+
+    override var changelogUrl: URL? by defaulted { URL("$github/blob/$modVersion/changelog.md") }
+
     override fun configureTestmod() {
         val sourceSets = project.extensions.getByType(SourceSetContainer::class.java)
         val main = sourceSets.getByName("main")
@@ -70,7 +105,8 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject): Ch
                     check.dependsOn(project.tasks.named("runGametest"))
                 }
             }
-            val modTestImplementationMapped = loom.createLazyConfiguration("modTestImplementationMapped") { it.isTransitive = false }
+            val modTestImplementationMapped =
+                loom.createLazyConfiguration("modTestImplementationMapped") { it.isTransitive = false }
             loom.createLazyConfiguration("modTestImplementation") { modTestImplementation ->
                 val remappedConfigurationEntry = RemappedConfigurationEntry(
                     modTestImplementation.name,
@@ -81,15 +117,18 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject): Ch
                 )
                 assert(modTestImplementationMapped.name == remappedConfigurationEntry.remappedConfiguration)
                 awfulDisgustingHack(project, remappedConfigurationEntry)
-                project.configurations.getByName("testmodCompileClasspath").extendsFrom(modTestImplementationMapped.get())
-                project.configurations.getByName("testmodRuntimeClasspath").extendsFrom(modTestImplementationMapped.get())
+                project.configurations.getByName("testmodCompileClasspath")
+                    .extendsFrom(modTestImplementationMapped.get())
+                project.configurations.getByName("testmodRuntimeClasspath")
+                    .extendsFrom(modTestImplementationMapped.get())
             }
         }
     }
 
     private fun awfulDisgustingHack(project: Project, remappedConfigurationEntry: RemappedConfigurationEntry) {
         val oldModCompileEntries = Constants.MOD_COMPILE_ENTRIES
-        val newModCompileEntries = ImmutableList.builder<RemappedConfigurationEntry>().addAll(oldModCompileEntries).add(remappedConfigurationEntry).build()
+        val newModCompileEntries = ImmutableList.builder<RemappedConfigurationEntry>().addAll(oldModCompileEntries)
+            .add(remappedConfigurationEntry).build()
         val zlorg = Unsafe::class.java.getDeclaredField("theUnsafe").also { it.isAccessible = true }[null] as Unsafe
         val f = Constants::class.java.getField("MOD_COMPILE_ENTRIES")
         val base = zlorg.staticFieldBase(f)
@@ -98,7 +137,7 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject): Ch
         zlorg.putObject(base, offset, newModCompileEntries)
         assert(zlorg.getObject(base, offset) == newModCompileEntries)
 
-        project.gradle.addListener(object: BuildListener {
+        project.gradle.addListener(object : BuildListener {
             override fun settingsEvaluated(settings: Settings) {}
 
             override fun projectsLoaded(gradle: Gradle) {}

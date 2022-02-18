@@ -94,11 +94,11 @@ class ChenilleGradlePlugin : Plugin<Project> {
     }
 
     private fun setupConfigurations(configurations: ConfigurationContainer) {
-        configurations.register("modBundledImplementation") {
+        configurations.register("modIncludeImplementation") {
             configurations.getByName("modImplementation").extendsFrom(it)
             configurations.getByName("include").extendsFrom(it)
         }
-        configurations.register("modBundledApi") {
+        configurations.register("modIncludeApi") {
             configurations.getByName("modApi").extendsFrom(it)
             configurations.getByName("include").extendsFrom(it)
         }

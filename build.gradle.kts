@@ -6,6 +6,7 @@ plugins {
     java
     `java-gradle-plugin`
     `maven-publish`
+    alias(libs.plugins.gradle.pluginPublish)
     alias(libs.plugins.licenser)
 }
 
@@ -57,10 +58,18 @@ tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
 
+pluginBundle {
+    website = "https://ladysnake.github.io/wiki/chenille"
+    vcsUrl = "https://github.com/Ladysnake/Chenille"
+    tags = listOf("fabricmc", "minecraft", "loom", "fabric-loom")
+}
+
 gradlePlugin {
     plugins {
         create("chenille") {
             id = "io.github.ladysnake.chenille"
+            displayName = "Chenille"
+            description = "Helper plugin for Minecraft mods using the Fabric modloader"
             implementationClass = "io.github.ladysnake.chenille.ChenilleGradlePlugin"
         }
     }

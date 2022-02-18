@@ -6,6 +6,7 @@ loom = "0.11-SNAPSHOT"
 githubRelease = "2.2.12"
 jgit = "[6.0.0,7.0.0)"
 minotaur = "1.2.1"
+gradle-publish = "0.18.0"
 
 [libraries]
 artifactory = { module = "org.jfrog.buildinfo:build-info-extractor-gradle", version.ref = "artifactory" }
@@ -18,3 +19,4 @@ minotaur = { module = "gradle.plugin.com.modrinth.minotaur:Minotaur", version.re
 
 [plugins]
 licenser = { id = "org.cadixdev.licenser", version.ref = "licenser" }
+gradle-pluginPublish = { id = "com.gradle.plugin-publish", version.ref = "gradle-publish"}

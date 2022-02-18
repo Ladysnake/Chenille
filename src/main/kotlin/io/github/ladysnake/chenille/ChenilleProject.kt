@@ -27,7 +27,7 @@ class ChenilleProject(private val project: Project): Project by project {
         try { JGitWrapper(Git.open(rootDir)) } catch (e: RepositoryNotFoundException) { null }
     }
 
-    val changelog = ChangelogText(project.file("changelog.md").toPath(), this)
+    val changelog = ChangelogText(this)
 
     val extension: ChenilleGradleExtension
         get() = project.extensions.getByType(ChenilleGradleExtension::class.java)

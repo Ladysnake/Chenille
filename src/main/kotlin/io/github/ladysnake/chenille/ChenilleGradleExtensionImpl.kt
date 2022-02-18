@@ -33,9 +33,12 @@ import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.configurationcache.extensions.capitalized
 import sun.misc.Unsafe
+import java.io.File
 import java.net.URL
 
 open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : ChenilleGradleExtension {
+    override var changelogFile: File by defaulted { project.file("changelog.md") }
+
     override var javaVersion: Int by defaulted { 16 } withListener { value ->
         project.tasks.withType(JavaCompile::class.java).configureEach {
             it.options.release.set(value)

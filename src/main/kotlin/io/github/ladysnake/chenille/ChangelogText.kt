@@ -19,7 +19,6 @@ package io.github.ladysnake.chenille
 
 import org.slf4j.LoggerFactory
 import java.io.IOException
-import java.nio.file.Path
 import java.util.concurrent.Callable
 import kotlin.io.path.absolute
 import kotlin.io.path.createDirectories
@@ -28,7 +27,7 @@ import kotlin.io.path.exists
 import kotlin.io.path.useLines
 import kotlin.io.path.writeText
 
-class ChangelogText(private val changelogFile: Path, project: ChenilleProject): Callable<CharSequence> {
+class ChangelogText(project: ChenilleProject): Callable<CharSequence> {
     companion object {
         private const val separator = "---"
         private val logger = LoggerFactory.getLogger(ChangelogText::class.java)
@@ -36,6 +35,8 @@ class ChangelogText(private val changelogFile: Path, project: ChenilleProject): 
 
     private val text by lazy {
         logger.info("Resolving changelog")
+
+        val changelogFile = project.extension.changelogFile.toPath()
 
         if (!changelogFile.exists()) {
             println("No changelog file found, creating one at \"${changelogFile.absolute()}\"")

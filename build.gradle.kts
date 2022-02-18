@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "io.github.ladysnake"
-version = "0.1-SNAPSHOT"
+version = project.properties["version"]!!
 
 repositories {
     mavenCentral()

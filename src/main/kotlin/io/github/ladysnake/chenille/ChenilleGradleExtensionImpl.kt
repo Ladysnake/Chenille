@@ -19,6 +19,7 @@ package io.github.ladysnake.chenille
 
 import com.google.common.collect.ImmutableList
 import io.github.ladysnake.chenille.api.ChenilleGradleExtension
+import io.github.ladysnake.chenille.api.ChenilleRepositoryHandler
 import io.github.ladysnake.chenille.helpers.LicenserHelper
 import net.fabricmc.loom.LoomGradleExtension
 import net.fabricmc.loom.configuration.RemappedConfigurationEntry
@@ -26,6 +27,7 @@ import net.fabricmc.loom.util.Constants
 import org.cadixdev.gradle.licenser.LicenseExtension
 import org.gradle.BuildListener
 import org.gradle.BuildResult
+import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.initialization.Settings
 import org.gradle.api.invocation.Gradle
@@ -68,6 +70,17 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
     override var github: URL? by defaulted { URL("https://github.com/$owners/$displayName") }
 
     override var changelogUrl: URL? by defaulted { URL("$github/blob/$modVersion/changelog.md") }
+
+    override val repositories: ChenilleRepositoryHandler
+        get() = ChenilleRepositoryHandlerImpl(this.project.repositories)
+
+    override fun repositories(action: Action<ChenilleRepositoryHandler>) {
+        action.execute(this.repositories)
+    }
+
+    override fun repositories(action: ChenilleRepositoryHandler.() -> Unit) {
+        this.repositories.action()
+    }
 
     override fun configureTestmod() {
         val sourceSets = project.extensions.getByType(SourceSetContainer::class.java)

@@ -17,10 +17,14 @@
  */
 package io.github.ladysnake.chenille.api
 
+import org.gradle.api.Action
 import java.io.File
 import java.net.URL
 
 interface ChenilleGradleExtension {
+    val repositories: ChenilleRepositoryHandler
+    fun repositories(action: Action<ChenilleRepositoryHandler>)
+    fun repositories(action: ChenilleRepositoryHandler.() -> Unit)
     fun configureTestmod()
     var changelogFile: File
     var javaVersion: Int

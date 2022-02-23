@@ -15,8 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package io.github.ladysnake.chenille.api;
+package io.github.ladysnake.chenille.api
 
-public interface RepositoryHandlerChenilleExtension {
-    void defaultRepositories();
+interface ChenilleRepositoryHandler {
+    fun allCommonRepositories()
+    fun cotton()
+    fun cursemaven()
+    fun jamieswhiteshirt()
+    fun jitpack()
+    fun ladysnake()
+    fun lucko()
+    fun modrinth()
+    fun shedaniel()
+    fun terraformers()
 }

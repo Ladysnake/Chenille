@@ -113,6 +113,7 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
             repo.setUrl("https://maven.terraformersmc.com/releases")
             repo.content {
                 it.includeGroup("com.terraformersmc")
+                it.includeGroup("dev.emi")
             }
         }
     }

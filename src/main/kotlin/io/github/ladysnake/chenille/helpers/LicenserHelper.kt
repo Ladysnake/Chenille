@@ -30,12 +30,7 @@ internal class LicenserHelper(private val project: ChenilleProject) {
 
         if (license != null) {
             project.extensions.configure(LicenseExtension::class.java) {
-                it.header.set(project.provider {
-                    project.resources.text.fromUri(
-                        ChenilleGradlePlugin::class.java.getResource("/license_headers/${license}.txt")
-                            ?: throw IllegalArgumentException("$license is not a recognized license header")
-                    )
-                })
+                it.header.set(project.extension.licenseHeader(license))
                 it.newLine.set(false)
                 it.properties { ext ->
                     val currentYear = Calendar.getInstance().get(Calendar.YEAR)

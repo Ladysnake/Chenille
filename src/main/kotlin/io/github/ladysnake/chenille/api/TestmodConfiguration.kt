@@ -17,25 +17,7 @@
  */
 package io.github.ladysnake.chenille.api
 
-import org.gradle.api.Action
-import org.gradle.api.provider.Provider
-import org.gradle.api.resources.TextResource
-import java.io.File
-import java.net.URL
-
-interface ChenilleGradleExtension {
-    val repositories: ChenilleRepositoryHandler
-    fun repositories(action: Action<ChenilleRepositoryHandler>)
-    fun repositories(action: ChenilleRepositoryHandler.() -> Unit)
-    fun configureTestmod()
-    fun configureTestmod(action: Action<TestmodConfiguration>)
-    fun licenseHeader(license: String): Provider<TextResource>
-    var changelogFile: File
-    var javaVersion: Int
-    var modVersion: String
-    var displayName: String
-    var license: String?
-    var owners: String
-    var github: URL?
-    var changelogUrl: URL?
+interface TestmodConfiguration {
+    fun withBaseTestRuns()
+    fun withDependencyConfiguration()
 }

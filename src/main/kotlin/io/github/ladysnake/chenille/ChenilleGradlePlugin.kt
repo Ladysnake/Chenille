@@ -58,7 +58,8 @@ class ChenilleGradlePlugin : Plugin<Project> {
 
         fun configureReleaseSubtask(name: String) {
             try {
-                val subtask = project.tasks.named(name) { it.mustRunAfter(checkGitStatus) }
+                val subtask = project.tasks.named(name)
+                subtask.configure { it.mustRunAfter(checkGitStatus) }
                 release.configure { it.dependsOn(subtask) }
             } catch (_: UnknownTaskException) {
                 release.configure {

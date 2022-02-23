@@ -19,6 +19,7 @@ package io.github.ladysnake.chenille
 
 import com.google.common.collect.ImmutableList
 import io.github.ladysnake.chenille.api.ChenilleGradleExtension
+import io.github.ladysnake.chenille.api.TestmodConfiguration
 import io.github.ladysnake.chenille.api.ChenilleRepositoryHandler
 import io.github.ladysnake.chenille.helpers.LicenserHelper
 import net.fabricmc.loom.LoomGradleExtension
@@ -31,6 +32,8 @@ import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.initialization.Settings
 import org.gradle.api.invocation.Gradle
+import org.gradle.api.provider.Provider
+import org.gradle.api.resources.TextResource
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.configurationcache.extensions.capitalized
@@ -82,7 +85,29 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
         this.repositories.action()
     }
 
+    override fun licenseHeader(license: String): Provider<TextResource> = project.provider {
+        project.resources.text.fromUri(
+            ChenilleGradlePlugin::class.java.getResource("/license_headers/${license}.txt")
+                ?: throw IllegalArgumentException("$license is not a recognized license header")
+        )
+    }
+
     override fun configureTestmod() {
+        configureTestmod {}
+    }
+
+    override fun configureTestmod(action: Action<TestmodConfiguration>) {
+        val cfg = object: TestmodConfiguration {
+            var baseTestRuns: Boolean = false
+            var dependencyConfiguration: Boolean = false
+            override fun withBaseTestRuns() {
+                baseTestRuns = true
+            }
+            override fun withDependencyConfiguration() {
+                dependencyConfiguration = true
+            }
+        }.also { action.execute(it) }
+
         val sourceSets = project.extensions.getByType(SourceSetContainer::class.java)
         val main = sourceSets.getByName("main")
         val testmodSourceSet = sourceSets.create("testmod") { testmod ->
@@ -94,49 +119,55 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
 
         project.extensions.configure<LoomGradleExtension>("loom") { loom ->
             loom.runs {
-                it.create("testmodClient") { run ->
-                    run.client()
-                    run.name("Testmod Client")
-                    run.source(testmodSourceSet)
-                }
-                val testmodServer = it.create("testmodServer") { run ->
-                    run.server()
-                    run.name("Testmod Server")
-                    run.source(testmodSourceSet)
+                if (cfg.baseTestRuns) {
+                    it.create("testmodClient") { run ->
+                        run.client()
+                        run.name("Testmod Client")
+                        run.source(testmodSourceSet)
+                    }
+                    it.create("testmodServer") { run ->
+                        run.server()
+                        run.name("Testmod Server")
+                        run.source(testmodSourceSet)
+                    }
                 }
                 it.create("gametest") { run ->
-                    run.inherit(testmodServer)
+                    run.server()
                     run.name("Game Test")
+                    run.source(testmodSourceSet)
                     // Enable the gametest runner
                     run.vmArg("-Dfabric-api.gametest")
                     run.vmArg("-Dfabric-api.gametest.report-file=${project.buildDir}/junit.xml")
                     run.runDir("build/gametest")
                 }
                 it.create("autoTestServer") { run ->
-                    run.inherit(testmodServer)
+                    run.server()
                     run.name("Auto Test Server")
+                    run.source(testmodSourceSet)
                     run.vmArg("-Dfabric.autoTest")
                 }
                 project.tasks.named("check") { check ->
                     check.dependsOn(project.tasks.named("runGametest"))
                 }
             }
-            val modTestImplementationMapped =
-                loom.createLazyConfiguration("modTestImplementationMapped") { it.isTransitive = false }
-            loom.createLazyConfiguration("modTestImplementation") { modTestImplementation ->
-                val remappedConfigurationEntry = RemappedConfigurationEntry(
-                    modTestImplementation.name,
-                    "testmodImplementation",
-                    true,
-                    true,
-                    RemappedConfigurationEntry.PublishingMode.NONE
-                )
-                assert(modTestImplementationMapped.name == remappedConfigurationEntry.remappedConfiguration)
-                awfulDisgustingHack(project, remappedConfigurationEntry)
-                project.configurations.getByName("testmodCompileClasspath")
-                    .extendsFrom(modTestImplementationMapped.get())
-                project.configurations.getByName("testmodRuntimeClasspath")
-                    .extendsFrom(modTestImplementationMapped.get())
+            if (cfg.dependencyConfiguration) {
+                val modTestImplementationMapped =
+                    loom.createLazyConfiguration("modTestImplementationMapped") { it.isTransitive = false }
+                loom.createLazyConfiguration("modTestImplementation") { modTestImplementation ->
+                    val remappedConfigurationEntry = RemappedConfigurationEntry(
+                        modTestImplementation.name,
+                        "testmodImplementation",
+                        true,
+                        true,
+                        RemappedConfigurationEntry.PublishingMode.NONE
+                    )
+                    assert(modTestImplementationMapped.name == remappedConfigurationEntry.remappedConfiguration)
+                    awfulDisgustingHack(project, remappedConfigurationEntry)
+                    project.configurations.getByName("testmodCompileClasspath")
+                        .extendsFrom(modTestImplementationMapped.get())
+                    project.configurations.getByName("testmodRuntimeClasspath")
+                        .extendsFrom(modTestImplementationMapped.get())
+                }
             }
         }
     }

@@ -18,10 +18,8 @@
 package io.github.ladysnake.chenille
 
 import io.github.ladysnake.chenille.api.ChenilleGradleExtension
-import io.github.ladysnake.chenille.helpers.ArtifactoryHelper
 import io.github.ladysnake.chenille.helpers.CurseGradleHelper
 import io.github.ladysnake.chenille.helpers.GithubReleaseHelper
-import io.github.ladysnake.chenille.helpers.MavenHelper
 import io.github.ladysnake.chenille.helpers.ModrinthHelper
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -83,7 +81,7 @@ class ChenilleGradlePlugin : Plugin<Project> {
             configurations.getByName("modApi").extendsFrom(it)
             configurations.getByName("include").extendsFrom(it)
         }
-        configurations.register("modOptionalImplementation") {
+        configurations.register("modLocalImplementation") {
             configurations.getByName("modCompileOnly").extendsFrom(it)
             configurations.getByName("modLocalRuntime").extendsFrom(it)
         }

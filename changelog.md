@@ -1,4 +1,10 @@
 ------------------------------------------------------
+Version 0.5.0
+------------------------------------------------------
+**Changes**
+- Renamed `modOptionalImplementation` to `modLocalImplementation` for consistency with `modLocalRuntime`
+
+------------------------------------------------------
 Version 0.4.0
 ------------------------------------------------------
 **Additions**

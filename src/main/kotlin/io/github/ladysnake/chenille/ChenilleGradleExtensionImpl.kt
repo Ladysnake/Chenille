@@ -19,9 +19,9 @@ package io.github.ladysnake.chenille
 
 import com.google.common.collect.ImmutableList
 import io.github.ladysnake.chenille.api.ChenilleGradleExtension
-import io.github.ladysnake.chenille.api.TestmodConfiguration
 import io.github.ladysnake.chenille.api.ChenilleRepositoryHandler
 import io.github.ladysnake.chenille.api.PublishingConfiguration
+import io.github.ladysnake.chenille.api.TestmodConfiguration
 import io.github.ladysnake.chenille.helpers.ArtifactoryHelper
 import io.github.ladysnake.chenille.helpers.LicenserHelper
 import io.github.ladysnake.chenille.helpers.MavenHelper
@@ -99,6 +99,7 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
                 artifactory = true
             }
         }
+        action.execute(cfg)
         MavenHelper(project).configureDefaults()
         if (cfg.artifactory) {
             ArtifactoryHelper(project).configureDefaults()

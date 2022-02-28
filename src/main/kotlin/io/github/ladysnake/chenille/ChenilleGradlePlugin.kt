@@ -21,6 +21,7 @@ import io.github.ladysnake.chenille.api.ChenilleGradleExtension
 import io.github.ladysnake.chenille.helpers.ArtifactoryHelper
 import io.github.ladysnake.chenille.helpers.CurseGradleHelper
 import io.github.ladysnake.chenille.helpers.GithubReleaseHelper
+import io.github.ladysnake.chenille.helpers.MavenHelper
 import io.github.ladysnake.chenille.helpers.ModrinthHelper
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -36,7 +37,6 @@ class ChenilleGradlePlugin : Plugin<Project> {
 
         val project = ChenilleProject(target)
 
-        target.plugins.findPlugin("com.jfrog.artifactory")?.run { ArtifactoryHelper(project).configureDefaults() }
         target.plugins.findPlugin("com.github.breadmoirai.github-release")?.run { GithubReleaseHelper(project).configureDefaults() }
         target.plugins.findPlugin("com.matthewprenger.cursegradle")?.run { CurseGradleHelper(project).configureDefaults() }
         target.plugins.findPlugin("com.modrinth.minotaur")?.run { ModrinthHelper(project).configureDefaults() }

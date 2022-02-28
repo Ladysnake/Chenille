@@ -21,7 +21,10 @@ import com.google.common.collect.ImmutableList
 import io.github.ladysnake.chenille.api.ChenilleGradleExtension
 import io.github.ladysnake.chenille.api.TestmodConfiguration
 import io.github.ladysnake.chenille.api.ChenilleRepositoryHandler
+import io.github.ladysnake.chenille.api.PublishingConfiguration
+import io.github.ladysnake.chenille.helpers.ArtifactoryHelper
 import io.github.ladysnake.chenille.helpers.LicenserHelper
+import io.github.ladysnake.chenille.helpers.MavenHelper
 import net.fabricmc.loom.LoomGradleExtension
 import net.fabricmc.loom.configuration.RemappedConfigurationEntry
 import net.fabricmc.loom.util.Constants
@@ -83,6 +86,23 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
 
     override fun repositories(action: ChenilleRepositoryHandler.() -> Unit) {
         this.repositories.action()
+    }
+
+    override fun configurePublishing() {
+        configurePublishing {}
+    }
+
+    override fun configurePublishing(action: Action<PublishingConfiguration>) {
+        val cfg = object: PublishingConfiguration {
+            var artifactory = false
+            override fun withArtifactory() {
+                artifactory = true
+            }
+        }
+        MavenHelper(project).configureDefaults()
+        if (cfg.artifactory) {
+            ArtifactoryHelper(project).configureDefaults()
+        }
     }
 
     override fun licenseHeader(license: String): Provider<TextResource> = project.provider {

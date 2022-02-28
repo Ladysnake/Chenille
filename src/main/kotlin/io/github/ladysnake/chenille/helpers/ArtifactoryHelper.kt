@@ -44,5 +44,6 @@ class ArtifactoryHelper(private val project: ChenilleProject) {
         } else {
             println("Artifactory not configured; please define the 'artifactory_user' and 'artifactory_api_key' properties before running artifactoryPublish")
         }
+        project.tasks.findByName("artifactoryPublish")?.dependsOn("build")
     }
 }

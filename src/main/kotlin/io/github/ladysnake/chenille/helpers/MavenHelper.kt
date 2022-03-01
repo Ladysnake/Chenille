@@ -25,7 +25,7 @@ class MavenHelper(private val project: ChenilleProject) {
     fun configureDefaults() {
         project.extensions.configure(PublishingExtension::class.java) { ext ->
             ext.publications {
-                it.create("maven", MavenPublication::class.java) { pub ->
+                it.create("mavenJava", MavenPublication::class.java) { pub ->
                     pub.from(project.components.getByName("java"))
                 }
             }

@@ -13,6 +13,8 @@ plugins {
 group = "io.github.ladysnake"
 version = project.properties["version"]!!
 
+val functionalTest: SourceSet by sourceSets.creating
+
 repositories {
     mavenCentral()
     gradlePluginPortal()
@@ -34,6 +36,8 @@ dependencies {
     implementation(libs.minotaur)
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    "functionalTestImplementation"(platform("org.spockframework:spock-bom:2.0-groovy-3.0"))
+    "functionalTestImplementation"("org.spockframework:spock-core")
 }
 
 license {
@@ -54,8 +58,20 @@ java {
     withSourcesJar()
 }
 
-tasks.getByName<Test>("test") {
+tasks.withType<Test>().configureEach {
     useJUnitPlatform()
+}
+
+val functionalTestTask = tasks.register<Test>("functionalTest") {
+    description = "Runs the functional tests."
+    group = "verification"
+    testClassesDirs = functionalTest.output.classesDirs
+    classpath = functionalTest.runtimeClasspath
+    mustRunAfter(tasks.test)
+}
+
+tasks.check {
+    dependsOn(functionalTestTask)
 }
 
 pluginBundle {
@@ -65,6 +81,7 @@ pluginBundle {
 }
 
 gradlePlugin {
+    testSourceSets(functionalTest)
     plugins {
         create("chenille") {
             id = "io.github.ladysnake.chenille"

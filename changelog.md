@@ -1,4 +1,13 @@
 ------------------------------------------------------
+Version 0.6.0
+------------------------------------------------------
+**Changes**
+- Release default configuration must now be applied through the gradle extension
+
+**Fixes**
+- Actually fixed artifactory publishing
+
+------------------------------------------------------
 Version 0.5.1
 ------------------------------------------------------
 **Fixes**

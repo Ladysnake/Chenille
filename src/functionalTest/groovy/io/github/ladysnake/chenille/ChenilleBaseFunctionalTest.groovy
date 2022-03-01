@@ -31,7 +31,7 @@ class ChenilleBaseFunctionalTest extends Specification {
         buildFile = new File(testProjectDir, 'build.gradle')
         buildFile << """
             plugins {
-                id 'io.github.ladysnake.chenille' apply false
+                id 'io.github.ladysnake.chenille'
             }
         """
         propertiesFile = new File(testProjectDir, "gradle.properties")
@@ -49,10 +49,6 @@ class ChenilleBaseFunctionalTest extends Specification {
 
     def "can setup artifactory publishing"() {
         buildFile << """
-            apply plugin: 'com.jfrog.artifactory'
-            apply plugin: 'maven-publish'
-            apply plugin: 'io.github.ladysnake.chenille'
-
             chenille {
                 configurePublishing {
                     withArtifactory()

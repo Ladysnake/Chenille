@@ -19,4 +19,7 @@ package io.github.ladysnake.chenille.api
 
 interface PublishingConfiguration {
     fun withArtifactory()
+    fun withGithubRelease()
+    fun withCurseforgeRelease()
+    fun withModrinthRelease()
 }

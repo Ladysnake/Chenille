@@ -21,8 +21,9 @@ import io.github.ladysnake.chenille.ChenilleProject
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 
-class MavenHelper(private val project: ChenilleProject) {
-    fun configureDefaults() {
+internal object MavenHelper {
+    fun configureDefaults(project: ChenilleProject) {
+        project.plugins.apply("maven-publish")
         project.extensions.configure(PublishingExtension::class.java) { ext ->
             ext.publications {
                 it.create("mavenJava", MavenPublication::class.java) { pub ->

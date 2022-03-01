@@ -23,8 +23,11 @@ import io.github.ladysnake.chenille.api.ChenilleRepositoryHandler
 import io.github.ladysnake.chenille.api.PublishingConfiguration
 import io.github.ladysnake.chenille.api.TestmodConfiguration
 import io.github.ladysnake.chenille.helpers.ArtifactoryHelper
+import io.github.ladysnake.chenille.helpers.CurseGradleHelper
+import io.github.ladysnake.chenille.helpers.GithubReleaseHelper
 import io.github.ladysnake.chenille.helpers.LicenserHelper
 import io.github.ladysnake.chenille.helpers.MavenHelper
+import io.github.ladysnake.chenille.helpers.ModrinthHelper
 import net.fabricmc.loom.LoomGradleExtension
 import net.fabricmc.loom.configuration.RemappedConfigurationEntry
 import net.fabricmc.loom.util.Constants
@@ -33,11 +36,14 @@ import org.gradle.BuildListener
 import org.gradle.BuildResult
 import org.gradle.api.Action
 import org.gradle.api.Project
+import org.gradle.api.Task
+import org.gradle.api.UnknownTaskException
 import org.gradle.api.initialization.Settings
 import org.gradle.api.invocation.Gradle
 import org.gradle.api.provider.Provider
 import org.gradle.api.resources.TextResource
 import org.gradle.api.tasks.SourceSetContainer
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.configurationcache.extensions.capitalized
 import sun.misc.Unsafe
@@ -56,11 +62,11 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
     override var modVersion: String by defaulted { project.version.toString() }
 
     override var license: String? by defaulted<String?> { null } withListener {
-        LicenserHelper(project).configure(it?.uppercase())
+        LicenserHelper.configure(project, it?.uppercase())
     }
 
     override var displayName: String by defaulted { project.name.capitalized() } withListener { value ->
-        project.extensions.configure(LicenseExtension::class.java) {
+        project.extensions.findByType(LicenseExtension::class.java)?.let {
             it.properties { ext -> ext["projectDisplayName"] = value }
         }
     }
@@ -68,7 +74,7 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
     override var owners: String by defaulted {
         project.group.toString().split('.').last().capitalized()
     } withListener { value ->
-        project.extensions.configure(LicenseExtension::class.java) {
+        project.extensions.findByType(LicenseExtension::class.java)?.let {
             it.properties { ext -> ext["projectOwners"] = value }
         }
     }
@@ -95,14 +101,70 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
     override fun configurePublishing(action: Action<PublishingConfiguration>) {
         val cfg = object: PublishingConfiguration {
             var artifactory = false
+            var curseforge = false
+            var github = false
+            var modrinth = false
+
             override fun withArtifactory() {
                 artifactory = true
             }
+
+            override fun withGithubRelease() {
+                github = true
+            }
+
+            override fun withCurseforgeRelease() {
+                curseforge = true
+            }
+
+            override fun withModrinthRelease() {
+                modrinth = true
+            }
         }
+
         action.execute(cfg)
-        MavenHelper(project).configureDefaults()
+
+        MavenHelper.configureDefaults(project)
+
+        val checkGitStatus: TaskProvider<CheckGitTask> =
+            project.tasks.register("checkGitStatus", CheckGitTask::class.java, project)
+
+        val release: TaskProvider<Task> = project.tasks.register("release") {
+            it.group = "publishing"
+            it.description = "Releases a new version to Maven, Github, Curseforge and Modrinth"
+            it.dependsOn(checkGitStatus)
+        }
+
+        fun configureReleaseSubtask(name: String) {
+            try {
+                val subtask = project.tasks.named(name)
+                subtask.configure { it.mustRunAfter(checkGitStatus) }
+                release.configure { it.dependsOn(subtask) }
+            } catch (_: UnknownTaskException) {
+                release.configure {
+                    it.doFirst { project.logger.warn("Task $name not found; skipping it for release") }
+                }
+            }
+        }
+
         if (cfg.artifactory) {
-            ArtifactoryHelper(project).configureDefaults()
+            ArtifactoryHelper.configureDefaults(project)
+            configureReleaseSubtask("artifactoryPublish")
+        }
+
+        if (cfg.curseforge) {
+            CurseGradleHelper.configureDefaults(project)
+            configureReleaseSubtask("curseforge")
+        }
+
+        if (cfg.github) {
+            GithubReleaseHelper.configureDefaults(project)
+            configureReleaseSubtask("githubRelease")
+        }
+
+        if (cfg.modrinth) {
+            ModrinthHelper.configureDefaults(project)
+            configureReleaseSubtask("modrinth")
         }
     }
 

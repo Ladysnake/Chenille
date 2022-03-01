@@ -17,16 +17,13 @@
  */
 package io.github.ladysnake.chenille.helpers
 
-import io.github.ladysnake.chenille.ChenilleGradlePlugin
 import io.github.ladysnake.chenille.ChenilleProject
 import org.cadixdev.gradle.licenser.LicenseExtension
 import java.util.*
 
-internal class LicenserHelper(private val project: ChenilleProject) {
-    fun configure(license: String?) {
-        if (project.plugins.findPlugin("org.cadixdev.licenser") == null) {
-            throw IllegalStateException("'org.cadixdev.licenser' plugin not found, cannot apply license headers")
-        }
+internal object LicenserHelper {
+    fun configure(project: ChenilleProject, license: String?) {
+        project.plugins.apply("org.cadixdev.licenser")
 
         if (license != null) {
             project.extensions.configure(LicenseExtension::class.java) {

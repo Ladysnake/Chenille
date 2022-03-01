@@ -21,10 +21,12 @@ import com.github.breadmoirai.githubreleaseplugin.GithubReleaseExtension
 import io.github.ladysnake.chenille.ChenilleProject
 import net.fabricmc.loom.task.RemapJarTask
 
-class GithubReleaseHelper(private val project: ChenilleProject) {
-    fun configureDefaults() {
+internal object GithubReleaseHelper {
+    fun configureDefaults(project: ChenilleProject) {
+        project.plugins.apply("com.github.breadmoirai.github-release")
+
         project.extensions.configure(GithubReleaseExtension::class.java) {
-            it.token("${project.findProperty("github_releases_token")}")
+            it.token("${project.findProperty("github_api_key")}")
             // default owner: last component of maven group
             // default repo: name of the project
             it.setTagName(project.version.toString())

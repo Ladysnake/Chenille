@@ -20,11 +20,13 @@ package io.github.ladysnake.chenille.helpers
 import com.modrinth.minotaur.TaskModrinthUpload
 import io.github.ladysnake.chenille.ChenilleProject
 
-class ModrinthHelper(private val project: ChenilleProject) {
-    fun configureDefaults() {
+internal object ModrinthHelper {
+    fun configureDefaults(project: ChenilleProject) {
+        project.plugins.apply("com.modrinth.minotaur")
+
         project.tasks.register("modrinth", TaskModrinthUpload::class.java) { task ->
-            if (project.hasProperty("modrinth_key")) {
-                task.token = project.findProperty("modrinth_key")!!.toString()
+            if (project.hasProperty("modrinth_api_key")) {
+                task.token = project.findProperty("modrinth_api_key")!!.toString()
             } else {
                 println("Modrinth API Key not configured; please define the 'modrinth_key' user property before release")
                 return@register

@@ -24,19 +24,21 @@ import com.matthewprenger.cursegradle.CurseRelation
 import groovy.lang.Closure
 import io.github.ladysnake.chenille.ChenilleProject
 
-internal class CurseGradleHelper(private val project: ChenilleProject) {
-    private inline fun CurseRelation.applyRelation(key: String, action: CurseRelation.(String) -> Unit) {
-        if (project.hasProperty(key)) {
-            project.properties[key].toString().split(";").forEach { slug ->
-                action(slug.trim())
+internal object CurseGradleHelper {
+    fun configureDefaults(project: ChenilleProject) {
+        project.plugins.apply("com.matthewprenger.cursegradle")
+
+        fun CurseRelation.applyRelation(key: String, action: CurseRelation.(String) -> Unit) {
+            if (project.hasProperty(key)) {
+                project.properties[key].toString().split(";").forEach { slug ->
+                    action(slug.trim())
+                }
             }
         }
-    }
 
-    fun configureDefaults() {
         project.extensions.configure(CurseExtension::class.java) { ext ->
-            ext.apiKey = project.findProperty("curseforge_key") ?: "".also {
-                println("Curseforge API Key not configured; please define the 'curseforge_key' user property before release")
+            ext.apiKey = project.findProperty("curseforge_api_key") ?: "".also {
+                println("Curseforge API Key not configured; please define the 'curseforge_api_key' user property before release")
             }
 
             if (project.hasProperty("curseforge_id")) {

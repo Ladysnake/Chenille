@@ -20,8 +20,10 @@ package io.github.ladysnake.chenille.helpers
 import io.github.ladysnake.chenille.ChenilleProject
 import org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention
 
-class ArtifactoryHelper(private val project: ChenilleProject) {
-    fun configureDefaults() {
+internal object ArtifactoryHelper {
+    fun configureDefaults(project: ChenilleProject) {
+        project.plugins.apply("com.jfrog.artifactory")
+
         if (project.hasProperty("artifactory_user")) {
             @Suppress("DEPRECATION")    // Artifactory bad >:(
             project.convention.getPlugin(ArtifactoryPluginConvention::class.java).let {

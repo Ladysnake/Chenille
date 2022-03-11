@@ -1,4 +1,16 @@
 ------------------------------------------------------
+Version 0.6.2
+------------------------------------------------------
+**Additions**
+- Added the GPL_WITH_MC_EXCEPTION license header
+
+**Changes**
+- The default display name for license headers now capitalizes the project name while accounting for snake casing
+
+**Fixes**
+- Fixed license plugin not being automatically applied and configured
+
+------------------------------------------------------
 Version 0.6.1
 ------------------------------------------------------
 **Fixes**

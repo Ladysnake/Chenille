@@ -32,7 +32,7 @@ internal object LicenserHelper {
                 it.properties { ext ->
                     val currentYear = Calendar.getInstance().get(Calendar.YEAR)
                     val firstYear = project.git?.firstCommit?.let { firstCommit ->
-                        Calendar.getInstance().apply { timeInMillis = firstCommit.commitTime.toLong() }
+                        Calendar.getInstance().apply { timeInMillis = firstCommit.commitTime.toLong() * 1000 }
                             .get(Calendar.YEAR)
                     }
                     val year =

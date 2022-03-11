@@ -35,6 +35,7 @@ class DefaultedProperty<T>(val initializer: () -> T) {
     operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
         initialized = true
         this.value = value
+        this.listener(value)
     }
 
     infix fun withListener(listener: (T) -> Unit): DefaultedProperty<T> {

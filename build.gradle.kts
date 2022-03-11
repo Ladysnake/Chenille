@@ -60,6 +60,7 @@ java {
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
+    maxHeapSize = "5G"
 }
 
 val functionalTestTask = tasks.register<Test>("functionalTest") {

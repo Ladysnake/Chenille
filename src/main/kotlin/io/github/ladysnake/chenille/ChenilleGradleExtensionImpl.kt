@@ -65,7 +65,9 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
         LicenserHelper.configure(project, it?.uppercase())
     }
 
-    override var displayName: String by defaulted { project.name.capitalized() } withListener { value ->
+    override var displayName: String by defaulted {
+        project.name.split("-").joinToString(" ") { it.capitalized() }
+    } withListener { value ->
         project.extensions.findByType(LicenseExtension::class.java)?.let {
             it.properties { ext -> ext["projectDisplayName"] = value }
         }

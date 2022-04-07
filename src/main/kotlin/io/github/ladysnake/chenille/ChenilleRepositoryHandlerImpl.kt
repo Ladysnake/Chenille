@@ -23,7 +23,7 @@ import kotlin.reflect.full.declaredFunctions
 
 class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler): ChenilleRepositoryHandler {
     override fun allCommonRepositories() {
-        this::class.declaredFunctions.filter { it.name != "allDefaultRepositories" }.forEach { it.call(this) }
+        this::class.declaredFunctions.filter { it.name != this::allCommonRepositories.name }.forEach { it.call(this) }
     }
 
     override fun cotton() {

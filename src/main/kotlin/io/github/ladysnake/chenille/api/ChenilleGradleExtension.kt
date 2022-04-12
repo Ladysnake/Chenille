@@ -27,7 +27,6 @@ interface ChenilleGradleExtension {
     val repositories: ChenilleRepositoryHandler
     fun repositories(action: Action<ChenilleRepositoryHandler>)
     fun repositories(action: ChenilleRepositoryHandler.() -> Unit)
-    fun configurePublishing()
     fun configurePublishing(action: Action<PublishingConfiguration>)
     fun configureTestmod()
     fun configureTestmod(action: Action<TestmodConfiguration>)

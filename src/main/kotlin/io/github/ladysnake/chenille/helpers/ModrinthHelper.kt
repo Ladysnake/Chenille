@@ -21,7 +21,7 @@ import com.modrinth.minotaur.TaskModrinthUpload
 import io.github.ladysnake.chenille.ChenilleProject
 
 internal object ModrinthHelper {
-    fun configureDefaults(project: ChenilleProject) {
+    fun configureDefaults(project: ChenilleProject, mainArtifact: Any) {
         project.plugins.apply("com.modrinth.minotaur")
 
         project.tasks.register("modrinth", TaskModrinthUpload::class.java) { task ->
@@ -34,7 +34,7 @@ internal object ModrinthHelper {
             if (project.hasProperty("modrinth_id")) {
                 task.projectId = project.findProperty("modrinth_id")!!.toString()
                 task.versionNumber = project.version.toString()
-                task.uploadFile = project.tasks.findByName("remapJar")
+                task.uploadFile = mainArtifact
                 project.subprojects { subproject ->
                     task.addFile(subproject.tasks.getByName("remapJar"))
                 }

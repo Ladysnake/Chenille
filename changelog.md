@@ -1,4 +1,13 @@
 ------------------------------------------------------
+Version 0.7.0
+------------------------------------------------------
+**Additions**
+- The main artifact for non-maven publications can now be configured in `configurePublishing`
+
+**Removals**
+- Removed the parameterless overload for `configurePublishing`
+
+------------------------------------------------------
 Version 0.6.3
 ------------------------------------------------------
 **Fixes**

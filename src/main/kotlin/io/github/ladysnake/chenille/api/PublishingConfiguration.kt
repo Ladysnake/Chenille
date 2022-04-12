@@ -18,8 +18,29 @@
 package io.github.ladysnake.chenille.api
 
 interface PublishingConfiguration {
+    /**
+     * The upload artifact file. This can be any object type that is resolvable by
+     * {@link #resolveFile(Project, Object, File)}.
+     */
+    var mainArtifact: Any
+
+    /**
+     * Publishes maven artifacts to artifactory. Uses the project's publishing configuration.
+     */
     fun withArtifactory()
+
+    /**
+     * Publishes the [mainArtifact] and sources through a Github release.
+     */
     fun withGithubRelease()
+
+    /**
+     * Publishes the [mainArtifact] through a curseforge release.
+     */
     fun withCurseforgeRelease()
+
+    /**
+     * Publishes the [mainArtifact] through a modrinth release.
+     */
     fun withModrinthRelease()
 }

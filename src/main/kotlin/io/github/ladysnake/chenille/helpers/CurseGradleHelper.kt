@@ -25,7 +25,7 @@ import groovy.lang.Closure
 import io.github.ladysnake.chenille.ChenilleProject
 
 internal object CurseGradleHelper {
-    fun configureDefaults(project: ChenilleProject) {
+    fun configureDefaults(project: ChenilleProject, mainArtifact: Any) {
         project.plugins.apply("com.matthewprenger.cursegradle")
 
         fun CurseRelation.applyRelation(key: String, action: CurseRelation.(String) -> Unit) {
@@ -56,7 +56,7 @@ internal object CurseGradleHelper {
                     curseforgeVersions.toString().split("; ").forEach(proj::addGameVersion)
                     proj.addGameVersion("Fabric")
 
-                    proj.mainArtifact(project.tasks.getByName("remapJar")) { artifact: CurseArtifact ->
+                    proj.mainArtifact(mainArtifact) { artifact: CurseArtifact ->
                         artifact.displayName = "${project.name}-${project.version}.jar"
 
                         if (

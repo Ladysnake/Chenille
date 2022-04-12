@@ -30,6 +30,7 @@ import io.github.ladysnake.chenille.helpers.MavenHelper
 import io.github.ladysnake.chenille.helpers.ModrinthHelper
 import net.fabricmc.loom.LoomGradleExtension
 import net.fabricmc.loom.configuration.RemappedConfigurationEntry
+import net.fabricmc.loom.task.RemapJarTask
 import net.fabricmc.loom.util.Constants
 import org.cadixdev.gradle.licenser.LicenseExtension
 import org.gradle.BuildListener
@@ -96,16 +97,14 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
         this.repositories.action()
     }
 
-    override fun configurePublishing() {
-        configurePublishing {}
-    }
-
     override fun configurePublishing(action: Action<PublishingConfiguration>) {
         val cfg = object: PublishingConfiguration {
             var artifactory = false
             var curseforge = false
             var github = false
             var modrinth = false
+
+            override var mainArtifact: Any = project.tasks.named("remapJar", RemapJarTask::class.java)
 
             override fun withArtifactory() {
                 artifactory = true
@@ -155,17 +154,17 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
         }
 
         if (cfg.curseforge) {
-            CurseGradleHelper.configureDefaults(project)
+            CurseGradleHelper.configureDefaults(project, cfg.mainArtifact)
             configureReleaseSubtask("curseforge")
         }
 
         if (cfg.github) {
-            GithubReleaseHelper.configureDefaults(project)
+            GithubReleaseHelper.configureDefaults(project, cfg.mainArtifact)
             configureReleaseSubtask("githubRelease")
         }
 
         if (cfg.modrinth) {
-            ModrinthHelper.configureDefaults(project)
+            ModrinthHelper.configureDefaults(project, cfg.mainArtifact)
             configureReleaseSubtask("modrinth")
         }
     }

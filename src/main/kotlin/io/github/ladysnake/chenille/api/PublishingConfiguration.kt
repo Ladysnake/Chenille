@@ -20,7 +20,7 @@ package io.github.ladysnake.chenille.api
 interface PublishingConfiguration {
     /**
      * The upload artifact file. This can be any object type that is resolvable by
-     * {@link #resolveFile(Project, Object, File)}.
+     * [org.gradle.api.Project.file].
      */
     var mainArtifact: Any
 

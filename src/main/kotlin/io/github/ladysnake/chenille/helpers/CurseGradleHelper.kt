@@ -57,7 +57,7 @@ internal object CurseGradleHelper {
                     curseforgeVersions.toString().split("; ").forEach(proj::addGameVersion)
                     proj.addGameVersion("Fabric")
 
-                    proj.mainArtifact(project.file((mainArtifact as? AbstractArchiveTask)?.archiveFile ?: mainArtifact)) { artifact: CurseArtifact ->
+                    proj.mainArtifact(project.file(mainArtifact)) { artifact: CurseArtifact ->
                         artifact.displayName = "${project.name}-${project.version}.jar"
 
                         if (

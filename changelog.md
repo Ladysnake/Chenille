@@ -1,4 +1,16 @@
 ------------------------------------------------------
+Version 0.8.0
+------------------------------------------------------
+**Changes**
+- Updated loom to 0.12
+
+**Fixes**
+- Actually fixed curse publishing with default artifact, no for real !
+
+**Removals**
+- The test mod dependency configuration has been removed, hopefully loom implements an equivalent feature properly soon
+
+------------------------------------------------------
 Version 0.7.2
 ------------------------------------------------------
 **Fixes**

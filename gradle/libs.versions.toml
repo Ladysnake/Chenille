@@ -2,7 +2,7 @@
 artifactory = "4.27.1"
 cursegradle = "1.4.0"
 licenser = "0.6.1"
-loom = "0.11-SNAPSHOT"
+loom = "0.12-SNAPSHOT"
 githubRelease = "2.2.12"
 jgit = "[6.0.0,7.0.0)"
 minotaur = "1.2.1"

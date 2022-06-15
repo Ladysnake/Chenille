@@ -25,7 +25,9 @@ import org.gradle.api.artifacts.ConfigurationContainer
 @Suppress("unused") // Plugin entrypoint duh
 class ChenilleGradlePlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        target.plugins.apply("fabric-loom")
+        if (!target.plugins.hasPlugin("fabric-loom")) {
+            target.plugins.apply("org.quiltmc.loom")
+        }
 
         val project = ChenilleProject(target)
 

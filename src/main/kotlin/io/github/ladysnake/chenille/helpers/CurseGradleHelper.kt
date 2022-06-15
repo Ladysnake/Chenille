@@ -23,7 +23,6 @@ import com.matthewprenger.cursegradle.CurseProject
 import com.matthewprenger.cursegradle.CurseRelation
 import groovy.lang.Closure
 import io.github.ladysnake.chenille.ChenilleProject
-import org.gradle.api.tasks.bundling.AbstractArchiveTask
 
 internal object CurseGradleHelper {
     fun configureDefaults(project: ChenilleProject, mainArtifact: Any) {
@@ -55,7 +54,11 @@ internal object CurseGradleHelper {
                         "Please specify the compatible minecraft versions using the 'curseforge_versions' project property"
                     )
                     curseforgeVersions.toString().split("; ").forEach(proj::addGameVersion)
-                    proj.addGameVersion("Fabric")
+                    if (project.isFabricMod) {
+                        proj.addGameVersion("Fabric")
+                    } else {
+                        proj.addGameVersion("Quilt")
+                    }
 
                     proj.mainArtifact(project.file(mainArtifact)) { artifact: CurseArtifact ->
                         artifact.displayName = "${project.name}-${project.version}.jar"

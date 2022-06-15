@@ -42,7 +42,11 @@ internal object ModrinthHelper {
                 "${project.findProperty("curseforge_versions")}".split("; ").forEach {
                     task.addGameVersion(it)
                 }
-                task.addLoader("fabric")
+                if (project.isFabricMod) {
+                    task.addLoader("fabric")
+                } else {
+                    task.addLoader("quilt")
+                }
             } else {
                 println("Modrinth Project ID not configured; please define the 'modrinth_id' project property before release")
             }

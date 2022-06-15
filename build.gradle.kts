@@ -22,6 +22,10 @@ repositories {
         name = "Fabric"
         setUrl("https://maven.fabricmc.net")
     }
+    maven {
+        name = "Quilt"
+        setUrl("https://maven.quiltmc.org/repository/release")
+    }
 }
 
 dependencies {

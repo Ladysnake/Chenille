@@ -2,7 +2,7 @@
 artifactory = "4.27.1"
 cursegradle = "1.4.0"
 licenser = "0.6.1"
-loom = "0.12-SNAPSHOT"
+loom = "0.12.+"
 githubRelease = "2.2.12"
 jgit = "[6.0.0,7.0.0)"
 minotaur = "1.2.1"
@@ -12,7 +12,7 @@ gradle-publish = "0.18.0"
 artifactory = { module = "org.jfrog.buildinfo:build-info-extractor-gradle", version.ref = "artifactory" }
 cursegradle = { module = "gradle.plugin.com.matthewprenger:CurseGradle", version.ref = "cursegradle" }
 licenser = { module = "gradle.plugin.org.cadixdev.gradle:licenser", version.ref = "licenser" }
-loom = { module = "net.fabricmc:fabric-loom", version.ref = "loom" }
+loom = { module = "org.quiltmc:loom", version.ref = "loom" }
 jgit = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit"}
 githubRelease = { module = "com.github.breadmoirai:github-release", version.ref = "githubRelease" }
 minotaur = { module = "gradle.plugin.com.modrinth.minotaur:Minotaur", version.ref = "minotaur" }

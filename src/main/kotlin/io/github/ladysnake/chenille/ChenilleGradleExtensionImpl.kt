@@ -17,7 +17,6 @@
  */
 package io.github.ladysnake.chenille
 
-import com.google.common.collect.ImmutableList
 import io.github.ladysnake.chenille.api.ChenilleGradleExtension
 import io.github.ladysnake.chenille.api.ChenilleRepositoryHandler
 import io.github.ladysnake.chenille.api.PublishingConfiguration
@@ -29,25 +28,17 @@ import io.github.ladysnake.chenille.helpers.LicenserHelper
 import io.github.ladysnake.chenille.helpers.MavenHelper
 import io.github.ladysnake.chenille.helpers.ModrinthHelper
 import net.fabricmc.loom.LoomGradleExtension
-import net.fabricmc.loom.configuration.RemappedConfigurationEntry
 import net.fabricmc.loom.task.RemapJarTask
-import net.fabricmc.loom.util.Constants
 import org.cadixdev.gradle.licenser.LicenseExtension
-import org.gradle.BuildListener
-import org.gradle.BuildResult
 import org.gradle.api.Action
-import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.UnknownTaskException
-import org.gradle.api.initialization.Settings
-import org.gradle.api.invocation.Gradle
 import org.gradle.api.provider.Provider
 import org.gradle.api.resources.TextResource
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.configurationcache.extensions.capitalized
-import sun.misc.Unsafe
 import java.io.File
 import java.net.URL
 
@@ -202,10 +193,6 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
         project.dependencies.add("testmodImplementation", main.output)
 
         project.extensions.configure<LoomGradleExtension>("loom") { loom ->
-            loom.mods.register("${project.name}-testmod") {
-                it.sourceSet(testmodSourceSet)
-            }
-
             loom.runs {
                 if (cfg.baseTestRuns) {
                     it.create("testmodClient") { run ->
@@ -230,9 +217,10 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
                 }
                 it.create("autoTestServer") { run ->
                     run.server()
-                    run.name("Auto Test Server")
+                    run.configName = "Auto Test Server"
                     run.source(testmodSourceSet)
-                    run.vmArg("-Dfabric.autoTest")
+                    run.property("quilt.auto_test")
+                    run.programArg("--nogui")
                 }
                 project.tasks.named("check") { check ->
                     check.dependsOn(project.tasks.named("runGametest"))

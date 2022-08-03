@@ -26,7 +26,7 @@ import io.github.ladysnake.chenille.ChenilleProject
 
 internal object CurseGradleHelper {
     fun configureDefaults(project: ChenilleProject, mainArtifact: Any) {
-        project.plugins.apply("com.matthewprenger.cursegradle")
+        project.pluginManager.apply("com.matthewprenger.cursegradle")
 
         fun CurseRelation.applyRelation(key: String, action: CurseRelation.(String) -> Unit) {
             if (project.hasProperty(key)) {

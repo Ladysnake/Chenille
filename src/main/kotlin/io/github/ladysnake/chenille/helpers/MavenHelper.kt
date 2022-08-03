@@ -23,7 +23,7 @@ import org.gradle.api.publish.maven.MavenPublication
 
 internal object MavenHelper {
     fun configureDefaults(project: ChenilleProject) {
-        project.plugins.apply("maven-publish")
+        project.pluginManager.apply("maven-publish")
 
         project.extensions.configure(PublishingExtension::class.java) { ext ->
             ext.publications { pubs ->

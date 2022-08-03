@@ -22,7 +22,7 @@ import org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention
 
 internal object ArtifactoryHelper {
     fun configureDefaults(project: ChenilleProject) {
-        project.plugins.apply("com.jfrog.artifactory")
+        project.pluginManager.apply("com.jfrog.artifactory")
 
         if (project.hasProperty("artifactory_user")) {
             @Suppress("DEPRECATION")    // Artifactory bad >:(

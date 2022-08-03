@@ -23,7 +23,7 @@ import java.util.*
 
 internal object LicenserHelper {
     fun configure(project: ChenilleProject, license: String?) {
-        project.plugins.apply("org.cadixdev.licenser")
+        project.pluginManager.apply("org.cadixdev.licenser")
 
         if (license != null) {
             project.extensions.configure(LicenseExtension::class.java) {

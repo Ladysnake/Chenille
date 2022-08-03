@@ -22,7 +22,7 @@ import io.github.ladysnake.chenille.ChenilleProject
 
 internal object GithubReleaseHelper {
     fun configureDefaults(project: ChenilleProject, mainArtifact: Any) {
-        project.plugins.apply("com.github.breadmoirai.github-release")
+        project.pluginManager.apply("com.github.breadmoirai.github-release")
 
         project.extensions.configure(GithubReleaseExtension::class.java) {
             it.token("${project.findProperty("github_api_key")}")

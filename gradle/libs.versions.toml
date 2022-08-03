@@ -5,7 +5,7 @@ licenser = "0.6.1"
 loom = "0.12.+"
 githubRelease = "2.2.12"
 jgit = "[6.0.0,7.0.0)"
-minotaur = "1.2.1"
+minotaur = "2.4.3"
 gradle-publish = "0.18.0"
 
 [libraries]
@@ -15,7 +15,7 @@ licenser = { module = "gradle.plugin.org.cadixdev.gradle:licenser", version.ref 
 loom = { module = "org.quiltmc:loom", version.ref = "loom" }
 jgit = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit"}
 githubRelease = { module = "com.github.breadmoirai:github-release", version.ref = "githubRelease" }
-minotaur = { module = "gradle.plugin.com.modrinth.minotaur:Minotaur", version.ref = "minotaur" }
+minotaur = { module = "com.modrinth.minotaur:Minotaur", version.ref = "minotaur" }
 
 [plugins]
 licenser = { id = "org.cadixdev.licenser", version.ref = "licenser" }

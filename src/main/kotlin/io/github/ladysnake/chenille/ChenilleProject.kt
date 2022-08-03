@@ -27,7 +27,7 @@ class ChenilleProject(private val project: Project): Project by project {
         try { JGitWrapper(Git.open(rootDir)) } catch (e: RepositoryNotFoundException) { null }
     }
     val isFabricMod: Boolean
-        get() = plugins.hasPlugin("fabric-loom")
+        get() = pluginManager.hasPlugin("fabric-loom")
 
     val changelog = ChangelogText(this)
 

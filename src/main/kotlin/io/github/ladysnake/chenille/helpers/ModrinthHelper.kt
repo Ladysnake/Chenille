@@ -17,35 +17,35 @@
  */
 package io.github.ladysnake.chenille.helpers
 
-import com.modrinth.minotaur.TaskModrinthUpload
+import com.modrinth.minotaur.ModrinthExtension
 import io.github.ladysnake.chenille.ChenilleProject
 
 internal object ModrinthHelper {
     fun configureDefaults(project: ChenilleProject, mainArtifact: Any) {
-        project.plugins.apply("com.modrinth.minotaur")
+        project.pluginManager.apply("com.modrinth.minotaur")
 
-        project.tasks.register("modrinth", TaskModrinthUpload::class.java) { task ->
+        project.extensions.configure(ModrinthExtension::class.java) { ext ->
             if (project.hasProperty("modrinth_api_key")) {
-                task.token = project.findProperty("modrinth_api_key")!!.toString()
+                ext.token.set(project.findProperty("modrinth_api_key")!!.toString())
             } else {
                 println("Modrinth API Key not configured; please define the 'modrinth_key' user property before release")
-                return@register
+                return@configure
             }
             if (project.hasProperty("modrinth_id")) {
-                task.projectId = project.findProperty("modrinth_id")!!.toString()
-                task.versionNumber = project.version.toString()
-                task.uploadFile = mainArtifact
+                ext.projectId.set(project.findProperty("modrinth_id")!!.toString())
+                ext.versionNumber.set(project.version.toString())
+                ext.uploadFile.set(mainArtifact)
                 project.subprojects { subproject ->
-                    task.addFile(subproject.tasks.getByName("remapJar"))
+                    ext.additionalFiles.add(subproject.tasks.getByName("remapJar"))
                 }
-                task.changelog = project.changelog.toString()
+                ext.changelog.set(project.providers.provider(project.changelog).map { it.toString() })
                 "${project.findProperty("curseforge_versions")}".split("; ").forEach {
-                    task.addGameVersion(it)
+                    ext.gameVersions.add(it)
                 }
                 if (project.isFabricMod) {
-                    task.addLoader("fabric")
+                    ext.loaders.add("fabric")
                 } else {
-                    task.addLoader("quilt")
+                    ext.loaders.add("quilt")
                 }
             } else {
                 println("Modrinth Project ID not configured; please define the 'modrinth_id' project property before release")

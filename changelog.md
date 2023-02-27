@@ -1,4 +1,10 @@
 ------------------------------------------------------
+Version 0.10.1
+------------------------------------------------------
+**Changes**
+- Subprojects are no longer automatically configured as additional files for Modrinth publication
+
+------------------------------------------------------
 Version 0.10.0
 ------------------------------------------------------
 **Changes**

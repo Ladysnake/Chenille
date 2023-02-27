@@ -35,9 +35,6 @@ internal object ModrinthHelper {
                 ext.projectId.set(project.findProperty("modrinth_id")!!.toString())
                 ext.versionNumber.set(project.version.toString())
                 ext.uploadFile.set(mainArtifact)
-                project.subprojects { subproject ->
-                    ext.additionalFiles.add(subproject.tasks.getByName("remapJar"))
-                }
                 ext.changelog.set(project.providers.provider(project.changelog).map { it.toString() })
                 "${project.findProperty("curseforge_versions")}".split("; ").forEach {
                     ext.gameVersions.add(it)

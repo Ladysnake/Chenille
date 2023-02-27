@@ -3,6 +3,8 @@ Version 0.10.0
 ------------------------------------------------------
 **Changes**
 - Updated minotaur to 2.4.3
+- Made test runs generation work with quilt-testing API
+- Bumped loom dependency
 
 ------------------------------------------------------
 Version 0.9.0

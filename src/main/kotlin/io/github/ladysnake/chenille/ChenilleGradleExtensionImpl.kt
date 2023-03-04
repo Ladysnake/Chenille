@@ -45,7 +45,7 @@ import java.net.URL
 open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : ChenilleGradleExtension {
     override var changelogFile: File by defaulted { project.file("changelog.md") }
 
-    override var javaVersion: Int by defaulted { 16 } withListener { value ->
+    override var javaVersion: Int by defaulted { 17 } withListener { value ->
         project.tasks.withType(JavaCompile::class.java).configureEach {
             it.options.release.set(value)
         }

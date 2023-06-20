@@ -94,11 +94,16 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
             var curseforge = false
             var github = false
             var modrinth = false
+            var ladysnakeMaven: MavenHelper.LadysnakeMaven? = null
 
             override var mainArtifact: Any = project.tasks.named("remapJar", RemapJarTask::class.java).flatMap { it.archiveFile }
 
             override fun withArtifactory() {
                 artifactory = true
+            }
+
+            override fun withLadysnakeMaven(snapshot: Boolean) {
+                ladysnakeMaven = if (snapshot) MavenHelper.LadysnakeMaven.SNAPSHOTS else MavenHelper.LadysnakeMaven.RELEASES
             }
 
             override fun withGithubRelease() {
@@ -116,7 +121,7 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
 
         action.execute(cfg)
 
-        MavenHelper.configureDefaults(project)
+        MavenHelper.configureDefaults(project, cfg.ladysnakeMaven)
 
         val checkGitStatus: TaskProvider<CheckGitTask> =
             project.tasks.register("checkGitStatus", CheckGitTask::class.java, project)
@@ -142,6 +147,10 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
         if (cfg.artifactory) {
             ArtifactoryHelper.configureDefaults(project)
             configureReleaseSubtask("artifactoryPublish")
+        }
+
+        if (cfg.ladysnakeMaven != null) {
+            configureReleaseSubtask("publish")
         }
 
         if (cfg.curseforge) {

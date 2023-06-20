@@ -20,9 +20,10 @@ package io.github.ladysnake.chenille.helpers
 import io.github.ladysnake.chenille.ChenilleProject
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
+import java.net.URI
 
 internal object MavenHelper {
-    fun configureDefaults(project: ChenilleProject) {
+    fun configureDefaults(project: ChenilleProject, ladysnakeMaven: LadysnakeMaven?) {
         project.pluginManager.apply("maven-publish")
 
         project.extensions.configure(PublishingExtension::class.java) { ext ->
@@ -33,6 +34,28 @@ internal object MavenHelper {
                     }
                 }
             }
+            ext.repositories { repos ->
+                if (ladysnakeMaven != null) {
+                    val ladysnakeMavenUsername = project.findProperty("ladysnake_maven_username")
+                    val ladysnakeMavenPassword = project.findProperty("ladysnake_maven_password")
+                    if (ladysnakeMavenUsername is String && ladysnakeMavenPassword is String) {
+                        repos.maven { repo ->
+                            repo.name = ladysnakeMaven.mavenName
+                            repo.url = URI("https://maven.ladysnake.org/${ladysnakeMaven.path}/")
+                            repo.credentials {
+                                it.username = ladysnakeMavenUsername
+                                it.password = ladysnakeMavenPassword
+                            }
+                        }
+                    } else {
+                        println("Cannot configure artifactory; please define ext.artifactoryUsername and ext.artifactoryPassword before running publish")
+                    }
+                }
+            }
         }
+    }
+
+    enum class LadysnakeMaven(val mavenName: String, val path: String) {
+        RELEASES("Ladysnake Releases", "releases"), SNAPSHOTS("Ladysnake Snapshots", "snapshots")
     }
 }

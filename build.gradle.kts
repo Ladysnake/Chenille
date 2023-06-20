@@ -84,13 +84,9 @@ tasks.check {
     dependsOn(functionalTestTask)
 }
 
-pluginBundle {
-    website = "https://ladysnake.github.io/wiki/chenille"
-    vcsUrl = "https://github.com/Ladysnake/Chenille"
-    tags = listOf("fabricmc", "minecraft", "loom", "fabric-loom")
-}
-
 gradlePlugin {
+    website.set("https://ladysnake.org/wiki/chenille")
+    vcsUrl.set("https://github.com/Ladysnake/Chenille")
     testSourceSets(functionalTest)
     plugins {
         create("chenille") {
@@ -98,6 +94,7 @@ gradlePlugin {
             displayName = "Chenille"
             description = "Helper plugin for Minecraft mods using the Fabric modloader"
             implementationClass = "io.github.ladysnake.chenille.ChenilleGradlePlugin"
+            tags.set(listOf("fabricmc", "minecraft", "loom", "fabric-loom", "quilt-loom"))
         }
     }
 }

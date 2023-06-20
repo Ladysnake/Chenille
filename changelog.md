@@ -2,10 +2,10 @@
 Version 0.11.0
 ------------------------------------------------------
 **Additions**
-- Added quick configuration to publish to the new Ladysnake maven
+- Added quick configuration to publish to the new Ladysnake maven repository
 
 **Changes**
-
+- Switched the Ladysnake maven repository url from ladysnake.jfrog.io to maven.ladysnake.org (Jfrog bad)
 
 ------------------------------------------------------
 Version 0.10.2

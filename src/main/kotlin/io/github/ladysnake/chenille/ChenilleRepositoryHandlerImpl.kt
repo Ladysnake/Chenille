@@ -67,11 +67,12 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
 
     override fun ladysnake() {
         repositories.maven { repo ->
-            repo.name = "Ladysnake Mods"
-            repo.setUrl("https://ladysnake.jfrog.io/artifactory/mods")
+            repo.name = "Ladysnake Releases"
+            repo.setUrl("https://maven.ladysnake.org/releases")
             repo.content {
                 it.includeGroupByRegex("dev\\.emi.*")
                 it.includeGroup("io.github.ladysnake")
+                it.includeGroup("org.ladysnake")
                 it.includeGroupByRegex("(dev|io\\.github)\\.onyxstudios.*")
             }
         }

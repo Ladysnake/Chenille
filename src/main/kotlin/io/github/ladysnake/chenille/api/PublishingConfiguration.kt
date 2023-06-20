@@ -36,6 +36,8 @@ interface PublishingConfiguration {
      *
      * @param snapshot if true, will publish to the Ladysnake `snapshots` repository instead of the default `releases`
      */
+    @Suppress("OVERLOADS_INTERFACE")    // it's ok, we have the right compiler options
+    @JvmOverloads   // haha groovy interoperability
     fun withLadysnakeMaven(snapshot: Boolean = false)
 
     /**

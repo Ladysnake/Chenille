@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
 plugins {
@@ -60,6 +61,10 @@ license {
 
 java {
     withSourcesJar()
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions.freeCompilerArgs.add("-Xjvm-default=all")
 }
 
 tasks.withType<Test>().configureEach {

@@ -41,9 +41,8 @@ internal object ModrinthHelper {
                 }
                 if (project.isFabricMod) {
                     ext.loaders.add("fabric")
-                } else {
-                    ext.loaders.add("quilt")
                 }
+                ext.loaders.add("quilt")
             } else {
                 println("Modrinth Project ID not configured; please define the 'modrinth_id' project property before release")
             }

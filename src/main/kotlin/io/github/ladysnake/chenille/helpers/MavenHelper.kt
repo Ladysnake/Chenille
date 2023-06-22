@@ -56,6 +56,6 @@ internal object MavenHelper {
     }
 
     enum class LadysnakeMaven(val mavenName: String, val path: String) {
-        RELEASES("Ladysnake Releases", "releases"), SNAPSHOTS("Ladysnake Snapshots", "snapshots")
+        RELEASES("ladysnake-releases", "releases"), SNAPSHOTS("ladysnake-snapshots", "snapshots")
     }
 }

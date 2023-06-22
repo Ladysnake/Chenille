@@ -1,7 +1,13 @@
 ------------------------------------------------------
+Version 0.11.2
+------------------------------------------------------
+**Fixes**
+- Fixed ladysnake maven names containing illegal characters
+
+------------------------------------------------------
 Version 0.11.1
 ------------------------------------------------------
-**Changes**
+**Fixes**
 - Fixed the `withLadysnakeMaven` default parameter on groovy buildscript 
 
 ------------------------------------------------------

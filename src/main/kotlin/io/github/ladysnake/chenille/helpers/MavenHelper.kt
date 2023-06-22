@@ -48,7 +48,7 @@ internal object MavenHelper {
                             }
                         }
                     } else {
-                        println("Cannot configure artifactory; please define ext.artifactoryUsername and ext.artifactoryPassword before running publish")
+                        println("Cannot configure Ladysnake Maven publication; please define ext.ladysnakeMavenUsername and ext.ladysnakeMavenPassword before running publish")
                     }
                 }
             }
@@ -56,6 +56,6 @@ internal object MavenHelper {
     }
 
     enum class LadysnakeMaven(val mavenName: String, val path: String) {
-        RELEASES("ladysnake-releases", "releases"), SNAPSHOTS("ladysnake-snapshots", "snapshots")
+        RELEASES("LadysnakeReleases", "releases"), SNAPSHOTS("LadysnakeSnapshots", "snapshots")
     }
 }

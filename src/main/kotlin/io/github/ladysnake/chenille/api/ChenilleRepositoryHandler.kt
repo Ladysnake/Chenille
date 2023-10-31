@@ -26,6 +26,9 @@ interface ChenilleRepositoryHandler {
     fun ladysnake()
     fun lucko()
     fun modrinth()
+    fun parchment()
     fun shedaniel()
     fun terraformers()
+    fun quiltMC()
+    fun quiltMCSnapshot()
 }

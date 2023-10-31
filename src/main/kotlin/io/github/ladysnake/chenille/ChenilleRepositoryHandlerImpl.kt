@@ -114,6 +114,7 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
             repo.content {
                 it.includeGroupByRegex("me\\.shedaniel\\..*")
                 it.includeGroup("me.sargunvohra.mcmods")
+                it.includeGroup("dev.architectury")
             }
         }
     }

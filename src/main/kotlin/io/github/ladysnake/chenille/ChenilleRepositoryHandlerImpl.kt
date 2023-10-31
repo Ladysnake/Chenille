@@ -98,12 +98,23 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
         }
     }
 
+    override fun parchment() {
+        repositories.maven { repo ->
+            repo.name = "Parchment"
+            repo.setUrl("https://maven.parchmentmc.org")
+            repo.content {
+                it.includeGroup("org.parchmentmc")
+            }
+        }
+    }
+
     override fun shedaniel() {
         repositories.maven { repo ->
             repo.setUrl("https://maven.shedaniel.me/")
             repo.content {
                 it.includeGroupByRegex("me\\.shedaniel\\..*")
                 it.includeGroup("me.sargunvohra.mcmods")
+                it.includeGroup("dev.architectury")
             }
         }
     }
@@ -116,6 +127,20 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
                 it.includeGroup("com.terraformersmc")
                 it.includeGroup("dev.emi")
             }
+        }
+    }
+
+    override fun quiltMC() {
+        repositories.maven { repo ->
+            repo.name = "QuiltMC"
+            repo.setUrl("https://maven.quiltmc.org/repository/release")
+        }
+    }
+
+    override fun quiltMCSnapshot() {
+        repositories.maven { repo ->
+            repo.name = "QuiltMC Snapshot"
+            repo.setUrl("https://maven.quiltmc.org/repository/snapshot")
         }
     }
 }

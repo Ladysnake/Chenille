@@ -1,6 +1,6 @@
 /*
  * Chenille
- * Copyright (C) 2022-2023 Ladysnake
+ * Copyright (C) 2022-2024 Ladysnake
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,8 +25,8 @@ import org.gradle.api.artifacts.ConfigurationContainer
 @Suppress("unused") // Plugin entrypoint duh
 class ChenilleGradlePlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        if (!target.pluginManager.hasPlugin("fabric-loom")) {
-            target.pluginManager.apply("org.quiltmc.loom")
+        if (!target.pluginManager.hasPlugin("fabric-loom") && !target.pluginManager.hasPlugin("org.quiltmc.loom")) {
+            target.logger.error("No Loom plugin detected! You must apply quilt-loom or fabric-loom before chenille")
         }
 
         val project = ChenilleProject(target)

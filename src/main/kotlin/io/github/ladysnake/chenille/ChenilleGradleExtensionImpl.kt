@@ -1,6 +1,6 @@
 /*
  * Chenille
- * Copyright (C) 2022-2023 Ladysnake
+ * Copyright (C) 2022-2024 Ladysnake
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,7 +27,7 @@ import io.github.ladysnake.chenille.helpers.GithubReleaseHelper
 import io.github.ladysnake.chenille.helpers.LicenserHelper
 import io.github.ladysnake.chenille.helpers.MavenHelper
 import io.github.ladysnake.chenille.helpers.ModrinthHelper
-import net.fabricmc.loom.LoomGradleExtension
+import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.task.RemapJarTask
 import org.cadixdev.gradle.licenser.LicenseExtension
 import org.gradle.api.Action
@@ -201,7 +201,7 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
 
         project.dependencies.add("testmodImplementation", main.output)
 
-        project.extensions.configure<LoomGradleExtension>("loom") { loom ->
+        project.extensions.configure<LoomGradleExtensionAPI>("loom") { loom ->
             loom.runs {
                 if (cfg.baseTestRuns) {
                     it.create("testmodClient") { run ->

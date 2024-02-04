@@ -12,7 +12,7 @@ gradle-publish = "1.2.0"
 artifactory = { module = "org.jfrog.buildinfo:build-info-extractor-gradle", version.ref = "artifactory" }
 cursegradle = { module = "gradle.plugin.com.matthewprenger:CurseGradle", version.ref = "cursegradle" }
 licenser = { module = "gradle.plugin.org.cadixdev.gradle:licenser", version.ref = "licenser" }
-loom = { module = "org.quiltmc:loom", version.ref = "loom" }
+loom = { module = "net.fabricmc:fabric-loom", version.ref = "loom" }
 jgit = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit"}
 githubRelease = { module = "com.github.breadmoirai:github-release", version.ref = "githubRelease" }
 minotaur = { module = "com.modrinth.minotaur:Minotaur", version.ref = "minotaur" }

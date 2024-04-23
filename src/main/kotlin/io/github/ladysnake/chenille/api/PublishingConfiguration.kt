@@ -34,11 +34,20 @@ interface PublishingConfiguration {
      *
      * This method uses the `ladysnake_maven_username` and `ladysnake_maven_password` properties to set maven credentials.
      *
-     * @param snapshot if true, will publish to the Ladysnake `snapshots` repository instead of the default `releases`
+     * @param lifecycle determines whether to publish to the
      */
     @Suppress("OVERLOADS_INTERFACE")    // it's ok, we have the right compiler options
     @JvmOverloads   // haha groovy interoperability
-    fun withLadysnakeMaven(snapshot: Boolean = false)
+    fun withLadysnakeMaven(lifecycle: ArtifactLifecycle = ArtifactLifecycle.AUTO)
+
+    /**
+     * Publishes maven artifacts to the Ladysnake maven. Uses the project's publishing configuration.
+     *
+     * This method uses the `ladysnake_maven_username` and `ladysnake_maven_password` properties to set maven credentials.
+     *
+     * @param snapshot if true, will publish to the Ladysnake `snapshots` repository instead of the default `releases`
+     */
+    fun withLadysnakeMaven(snapshot: Boolean) = withLadysnakeMaven(if (snapshot) ArtifactLifecycle.SNAPSHOT else ArtifactLifecycle.RELEASE)
 
     /**
      * Publishes the [mainArtifact] and sources through a Github release.

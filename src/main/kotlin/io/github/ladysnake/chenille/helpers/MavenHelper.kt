@@ -18,12 +18,13 @@
 package io.github.ladysnake.chenille.helpers
 
 import io.github.ladysnake.chenille.ChenilleProject
+import io.github.ladysnake.chenille.api.ArtifactLifecycle
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import java.net.URI
 
 internal object MavenHelper {
-    fun configureDefaults(project: ChenilleProject, ladysnakeMaven: LadysnakeMaven?) {
+    fun configureDefaults(project: ChenilleProject, artifactLifecycle: ArtifactLifecycle?) {
         project.pluginManager.apply("maven-publish")
 
         project.extensions.configure(PublishingExtension::class.java) { ext ->
@@ -35,7 +36,12 @@ internal object MavenHelper {
                 }
             }
             ext.repositories { repos ->
-                if (ladysnakeMaven != null) {
+                if (artifactLifecycle != null) {
+                    val ladysnakeMaven = when (artifactLifecycle) {
+                        ArtifactLifecycle.AUTO -> if (project.version.toString().endsWith("-SNAPSHOT")) LadysnakeMaven.SNAPSHOTS else LadysnakeMaven.RELEASES
+                        ArtifactLifecycle.RELEASE -> LadysnakeMaven.RELEASES
+                        ArtifactLifecycle.SNAPSHOT -> LadysnakeMaven.SNAPSHOTS
+                    }
                     val ladysnakeMavenUsername = project.findProperty("ladysnake_maven_username")
                     val ladysnakeMavenPassword = project.findProperty("ladysnake_maven_password")
                     if (ladysnakeMavenUsername is String && ladysnakeMavenPassword is String) {

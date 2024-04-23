@@ -19,6 +19,7 @@ package io.github.ladysnake.chenille
 
 import io.github.ladysnake.chenille.api.ChenilleGradleExtension
 import io.github.ladysnake.chenille.api.ChenilleRepositoryHandler
+import io.github.ladysnake.chenille.api.ArtifactLifecycle
 import io.github.ladysnake.chenille.api.PublishingConfiguration
 import io.github.ladysnake.chenille.api.TestmodConfiguration
 import io.github.ladysnake.chenille.helpers.ArtifactoryHelper
@@ -94,7 +95,7 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
             var curseforge = false
             var github = false
             var modrinth = false
-            var ladysnakeMaven: MavenHelper.LadysnakeMaven? = null
+            var ladysnakeArtifactLifecycle: ArtifactLifecycle? = null
 
             override var mainArtifact: Any = project.tasks.named("remapJar", RemapJarTask::class.java).flatMap { it.archiveFile }
 
@@ -102,8 +103,8 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
                 artifactory = true
             }
 
-            override fun withLadysnakeMaven(snapshot: Boolean) {
-                ladysnakeMaven = if (snapshot) MavenHelper.LadysnakeMaven.SNAPSHOTS else MavenHelper.LadysnakeMaven.RELEASES
+            override fun withLadysnakeMaven(lifecycle: ArtifactLifecycle) {
+                ladysnakeArtifactLifecycle = lifecycle
             }
 
             override fun withGithubRelease() {
@@ -121,7 +122,7 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
 
         action.execute(cfg)
 
-        MavenHelper.configureDefaults(project, cfg.ladysnakeMaven)
+        MavenHelper.configureDefaults(project, cfg.ladysnakeArtifactLifecycle)
 
         val checkGitStatus: TaskProvider<CheckGitTask> =
             project.tasks.register("checkGitStatus", CheckGitTask::class.java, project)
@@ -149,7 +150,7 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
             configureReleaseSubtask("artifactoryPublish")
         }
 
-        if (cfg.ladysnakeMaven != null) {
+        if (cfg.ladysnakeArtifactLifecycle != null) {
             configureReleaseSubtask("publish")
         }
 

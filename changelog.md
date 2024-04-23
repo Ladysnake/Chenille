@@ -1,4 +1,13 @@
 ------------------------------------------------------
+Version 0.12.1
+------------------------------------------------------
+**Changes**
+- Publishing of versions ending in "-SNAPSHOT" to the Ladysnake maven now targets the snapshot repository by default
+
+**Fixes**
+- Test mod dependency configurations work once again
+
+------------------------------------------------------
 Version 0.12.0
 ------------------------------------------------------
 **Changes**

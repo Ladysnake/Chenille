@@ -202,6 +202,9 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
         project.dependencies.add("testmodImplementation", main.output)
 
         project.extensions.configure<LoomGradleExtensionAPI>("loom") { loom ->
+            if (cfg.dependencyConfiguration) {
+                loom.createRemapConfigurations(testmodSourceSet)
+            }
             loom.runs {
                 if (cfg.baseTestRuns) {
                     it.create("testmodClient") { run ->

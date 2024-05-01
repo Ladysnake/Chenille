@@ -52,7 +52,7 @@ class ChenilleBaseFunctionalTest extends Specification {
         buildFile << """
             chenille {
                 configurePublishing {
-                    withArtifactory()
+                    withLadysnakeMaven()
                 }
             }
 

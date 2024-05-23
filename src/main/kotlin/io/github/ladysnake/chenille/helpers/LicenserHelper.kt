@@ -19,15 +19,25 @@ package io.github.ladysnake.chenille.helpers
 
 import io.github.ladysnake.chenille.ChenilleProject
 import org.cadixdev.gradle.licenser.LicenseExtension
+import org.gradle.api.file.RegularFile
+import org.gradle.api.provider.Provider
 import java.util.*
 
 internal object LicenserHelper {
-    fun configure(project: ChenilleProject, license: String?) {
+    fun configure(project: ChenilleProject, license: String?, customLicense: Any?) {
+        check(license == null || customLicense == null) {
+            "You cannot set both license and customLicense at the same time"
+        }
+
         project.pluginManager.apply("org.cadixdev.licenser")
 
-        if (license != null) {
+        if (license != null || customLicense != null) {
             project.extensions.configure(LicenseExtension::class.java) {
-                it.header.set(project.extension.licenseHeader(license))
+                if (license != null) {
+                    it.header.set(project.extension.licenseHeader(license))
+                } else {
+                    it.header(customLicense)
+                }
                 it.newLine.set(false)
                 it.properties { ext ->
                     val currentYear = Calendar.getInstance().get(Calendar.YEAR)
@@ -40,7 +50,7 @@ internal object LicenserHelper {
                     ext["year"] = year
                     ext["projectDisplayName"] = project.extension.displayName
                     ext["projectOwners"] = project.extension.owners
-                    if (license.contains("GPL")) ext["gplVersion"] = project.properties["gpl_version"] ?: "3"
+                    if (license?.contains("GPL") == true) ext["gplVersion"] = project.properties["gpl_version"] ?: "3"
                 }
             }
         }

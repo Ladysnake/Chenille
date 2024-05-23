@@ -34,6 +34,7 @@ import org.cadixdev.gradle.licenser.LicenseExtension
 import org.gradle.api.Action
 import org.gradle.api.Task
 import org.gradle.api.UnknownTaskException
+import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 import org.gradle.api.resources.TextResource
 import org.gradle.api.tasks.SourceSetContainer
@@ -55,7 +56,11 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
     override var modVersion: String by defaulted { project.version.toString() }
 
     override var license: String? by defaulted<String?> { null } withListener {
-        LicenserHelper.configure(project, it?.uppercase())
+        LicenserHelper.configure(project, it?.uppercase(), customLicense)
+    }
+
+    override var customLicense: Any? by defaulted<Any?> { null } withListener {
+        LicenserHelper.configure(project, license?.uppercase(), it)
     }
 
     override var displayName: String by defaulted {

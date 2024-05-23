@@ -18,6 +18,7 @@
 package io.github.ladysnake.chenille.api
 
 import org.gradle.api.Action
+import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 import org.gradle.api.resources.TextResource
 import java.io.File
@@ -35,7 +36,18 @@ interface ChenilleGradleExtension {
     var javaVersion: Int
     var modVersion: String
     var displayName: String
+
+    /**
+     * Set the license header to a predefined one
+     */
     var license: String?
+
+    /**
+     * Set the license header to the contents of a file.
+     *
+     * Can be anything accepted in {@link org.gradle.api.Project#file(Object)}
+     */
+    var customLicense: Any?
     var owners: String
     var github: URL?
     var changelogUrl: URL?

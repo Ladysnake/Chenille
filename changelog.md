@@ -1,4 +1,10 @@
 ------------------------------------------------------
+Version 0.13.0
+------------------------------------------------------
+**Additions**
+- Projects can now use the `customLicense` property to have quick configuration with a custom template
+
+------------------------------------------------------
 Version 0.12.2
 ------------------------------------------------------
 **Fixes**

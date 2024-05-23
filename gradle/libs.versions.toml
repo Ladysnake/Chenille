@@ -6,7 +6,7 @@ loom = "1.6-SNAPSHOT"
 githubRelease = "2.2.12"
 jgit = "[6.0.0,7.0.0)"
 minotaur = "2.4.3"
-gradle-publish = "1.2.0"
+gradle-publish = "1.2.1"
 
 [libraries]
 artifactory = { module = "org.jfrog.buildinfo:build-info-extractor-gradle", version.ref = "artifactory" }

@@ -73,7 +73,7 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
                 it.includeGroupByRegex("dev\\.emi.*")
                 it.includeGroupByRegex(".*moriyashiine.*")
                 it.includeGroup("io.github.ladysnake")
-                it.includeGroupByRegex("org.ladysnake\\..*")
+                it.includeGroupByRegex("org.ladysnake.*")
                 it.includeGroupByRegex("(dev|io\\.github)\\.onyxstudios.*")
             }
         }

@@ -87,7 +87,7 @@ tasks.check {
 
 gradlePlugin {
     website.set("https://ladysnake.org/wiki/chenille")
-    vcsUrl.set("https://github.com/Ladysnake/Chenille")
+    vcsUrl.set("https://github.com/ladysnake/chenille")
     testSourceSets(functionalTest)
     plugins {
         create("chenille") {

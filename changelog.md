@@ -1,4 +1,14 @@
 ------------------------------------------------------
+Version 0.14.0
+------------------------------------------------------
+**Changes**
+- Improved Modrinth support with new project properties:
+  - Use `modrinth_versions` to set the semicolon-separated list of game versions on Modrinth
+    - If unspecified, will fallback to `curseforge_versions`
+  - Use `mr_requirements`, `mr_optionals`, `mr_embeddeds`, and `mr_incompatibles` to configure relations with other modrinth projects
+  - More information [on the website](https://ladysnake.org/wiki/chenille)
+
+------------------------------------------------------
 Version 0.13.1
 ------------------------------------------------------
 **Fixes**

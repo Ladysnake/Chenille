@@ -5,7 +5,7 @@ licenser = "0.6.1"
 loom = "1.6-SNAPSHOT"
 githubRelease = "2.2.12"
 jgit = "[6.0.0,7.0.0)"
-minotaur = "2.4.3"
+minotaur = "2.8.7"
 gradle-publish = "1.2.1"
 
 [libraries]

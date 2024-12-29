@@ -7,6 +7,8 @@ githubRelease = "2.2.12"
 jgit = "[6.0.0,7.0.0)"
 minotaur = "2.8.7"
 gradle-publish = "1.2.1"
+junit = "5.11.4"
+mockk = "1.13.14"
 
 [libraries]
 artifactory = { module = "org.jfrog.buildinfo:build-info-extractor-gradle", version.ref = "artifactory" }
@@ -16,6 +18,10 @@ loom = { module = "net.fabricmc:fabric-loom", version.ref = "loom" }
 jgit = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit"}
 githubRelease = { module = "com.github.breadmoirai:github-release", version.ref = "githubRelease" }
 minotaur = { module = "com.modrinth.minotaur:Minotaur", version.ref = "minotaur" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+junit-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
 
 [plugins]
 licenser = { id = "org.cadixdev.licenser", version.ref = "licenser" }

@@ -40,8 +40,10 @@ dependencies {
     implementation(libs.minotaur)
     compileOnly(libs.loom)
     runtimeOnly(libs.loom)
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation(libs.junit.api)
+    testImplementation(libs.junit.params)
+    testImplementation(libs.mockk)
+    testRuntimeOnly(libs.junit.engine)
     "functionalTestImplementation"(platform("org.spockframework:spock-bom:2.0-groovy-3.0"))
     "functionalTestImplementation"("org.spockframework:spock-core")
 }

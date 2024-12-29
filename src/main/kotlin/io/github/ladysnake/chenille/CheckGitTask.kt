@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 abstract class CheckGitTask @Inject constructor(private val project: ChenilleProject): DefaultTask() {
     companion object {
-        val versionBranchRegex = """\d+\.\d+(?>\.\d+)?""".toRegex()
+        val versionBranchRegex = """\d+\.\d+(?>\.\d+)?(?>-[\w-]+)?""".toRegex()
     }
 
     init {

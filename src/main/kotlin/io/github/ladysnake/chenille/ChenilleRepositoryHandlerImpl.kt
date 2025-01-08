@@ -75,6 +75,7 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
                 it.includeGroup("io.github.edwinmindcraft") // Origins for Forge maven group
                 it.includeGroup("io.github.ladysnake")
                 it.includeGroupByRegex("org.ladysnake.*")
+                it.includeGroup("dev.doctor4t")
                 it.includeGroupByRegex("(dev|io\\.github)\\.onyxstudios.*")
             }
         }

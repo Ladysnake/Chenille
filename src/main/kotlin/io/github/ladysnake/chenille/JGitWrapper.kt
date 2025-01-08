@@ -19,6 +19,7 @@ package io.github.ladysnake.chenille
 
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.api.Status
+import org.eclipse.jgit.api.TransportCommand
 import org.eclipse.jgit.api.errors.NoHeadException
 import org.eclipse.jgit.lib.BranchTrackingStatus
 import org.eclipse.jgit.lib.Constants
@@ -29,8 +30,9 @@ import org.eclipse.jgit.revwalk.RevCommit
 import org.eclipse.jgit.revwalk.RevSort
 import org.eclipse.jgit.revwalk.RevWalk
 import org.eclipse.jgit.transport.FetchResult
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider
 
-class JGitWrapper(val jgit: Git) {
+class JGitWrapper(val jgit: Git, gitAccessToken: String? = null) {
     val repository: Repository by lazy { jgit.repository }
     val firstCommit: RevCommit by lazy { RevWalk(repository).use {
         it.sort(RevSort.COMMIT_TIME_DESC, true)
@@ -39,6 +41,9 @@ class JGitWrapper(val jgit: Git) {
         it.markStart(it.lookupCommit(headId))
         it.next()
     }}
+    private val credentialsProvider = gitAccessToken?.let {
+        UsernamePasswordCredentialsProvider(it, "")
+    }
 
     fun status(): Status = jgit.status().call()
 
@@ -52,7 +57,14 @@ class JGitWrapper(val jgit: Git) {
             return null
         }
 
-    fun fetch(): FetchResult = jgit.fetch().call()
+    private fun <T : TransportCommand<*, *>> T.setCredentials(): T {
+        if (credentialsProvider != null) {
+            setCredentialsProvider(credentialsProvider)
+        }
+        return this
+    }
+
+    fun fetch(): FetchResult = jgit.fetch().setCredentials().call()
     fun listTags(): List<Ref> = jgit.tagList().call()
 }
 

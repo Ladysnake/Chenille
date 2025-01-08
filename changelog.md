@@ -4,6 +4,10 @@ Version 0.15.0
 **Changes**
 - The `checkGitStatus` task now allows trailing data branch names, like "1.15-quilt"
 
+  **Fixes**
+- The `checkGitStatus` task should now work with private repositories
+- Updated content filter for the Ladysnake maven
+
 ------------------------------------------------------
 Version 0.14.0
 ------------------------------------------------------

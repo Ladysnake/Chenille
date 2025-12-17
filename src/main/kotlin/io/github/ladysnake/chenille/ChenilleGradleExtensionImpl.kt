@@ -17,9 +17,9 @@
  */
 package io.github.ladysnake.chenille
 
+import io.github.ladysnake.chenille.api.ArtifactLifecycle
 import io.github.ladysnake.chenille.api.ChenilleGradleExtension
 import io.github.ladysnake.chenille.api.ChenilleRepositoryHandler
-import io.github.ladysnake.chenille.api.ArtifactLifecycle
 import io.github.ladysnake.chenille.api.PublishingConfiguration
 import io.github.ladysnake.chenille.api.TestmodConfiguration
 import io.github.ladysnake.chenille.helpers.ArtifactoryHelper
@@ -30,11 +30,9 @@ import io.github.ladysnake.chenille.helpers.MavenHelper
 import io.github.ladysnake.chenille.helpers.ModrinthHelper
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.task.RemapJarTask
-import org.cadixdev.gradle.licenser.LicenseExtension
 import org.gradle.api.Action
 import org.gradle.api.Task
 import org.gradle.api.UnknownTaskException
-import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 import org.gradle.api.resources.TextResource
 import org.gradle.api.tasks.SourceSetContainer
@@ -65,18 +63,10 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
 
     override var displayName: String by defaulted {
         project.name.split("-").joinToString(" ") { it.capitalized() }
-    } withListener { value ->
-        project.extensions.findByType(LicenseExtension::class.java)?.let {
-            it.properties { ext -> ext["projectDisplayName"] = value }
-        }
     }
 
     override var owners: String by defaulted {
         project.group.toString().split('.').last().capitalized()
-    } withListener { value ->
-        project.extensions.findByType(LicenseExtension::class.java)?.let {
-            it.properties { ext -> ext["projectOwners"] = value }
-        }
     }
 
     override var github: URL? by defaulted { URL("https://github.com/$owners/$displayName") }

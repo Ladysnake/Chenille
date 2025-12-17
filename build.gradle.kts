@@ -1,8 +1,9 @@
+import dev.yumi.gradle.licenser.api.rule.HeaderRule
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
 plugins {
-    kotlin("jvm") version "1.9.20"
+    kotlin("jvm") version "2.2.20"
     groovy
     java
     `java-gradle-plugin`
@@ -49,17 +50,22 @@ dependencies {
 }
 
 license {
-    setHeader(file("src/main/resources/license_headers/LGPL.txt"))
-    newLine.set(false)
-    properties {
-        val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-        val firstYear = 2022
-        val year = if (currentYear == firstYear) currentYear else "$firstYear-$currentYear"
-        ext["year"] = year
-        ext["projectDisplayName"] = project.properties["display_name"]
-        ext["projectOwners"] = project.properties["owners"]
-        ext["gplVersion"] = "3"
-    }
+    val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+    val firstYear = 2022
+    val year = if (currentYear == firstYear) "$currentYear" else "$firstYear-$currentYear"
+    val lgplLines = file("src/main/resources/license_headers/LGPL.txt").readText()
+        .replace("\\$\\{(.*?)}".toRegex()) {
+            when (val g = it.groups[1]!!.value) {
+                "year" -> year
+                "projectDisplayName" -> project.properties["display_name"].toString()
+                "projectOwners" -> project.properties["owners"].toString()
+                "gplVersion" -> "3"
+                else -> g
+            }
+        }
+        .split("\r?\n".toRegex())
+    val lgplHeader = HeaderRule.parse("LGPL", lgplLines)
+    rule(lgplHeader)
 }
 
 java {

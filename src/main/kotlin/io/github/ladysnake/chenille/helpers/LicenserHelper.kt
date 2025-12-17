@@ -17,10 +17,9 @@
  */
 package io.github.ladysnake.chenille.helpers
 
+import dev.yumi.gradle.licenser.YumiLicenserGradleExtension
+import dev.yumi.gradle.licenser.api.rule.HeaderRule
 import io.github.ladysnake.chenille.ChenilleProject
-import org.cadixdev.gradle.licenser.LicenseExtension
-import org.gradle.api.file.RegularFile
-import org.gradle.api.provider.Provider
 import java.util.*
 
 internal object LicenserHelper {
@@ -29,28 +28,36 @@ internal object LicenserHelper {
             "You cannot set both license and customLicense at the same time"
         }
 
-        project.pluginManager.apply("org.cadixdev.licenser")
+        project.pluginManager.apply("dev.yumi.gradle.licenser")
 
         if (license != null || customLicense != null) {
-            project.extensions.configure(LicenseExtension::class.java) {
-                if (license != null) {
-                    it.header.set(project.extension.licenseHeader(license))
-                } else {
-                    it.header(customLicense)
-                }
-                it.newLine.set(false)
-                it.properties { ext ->
+            project.afterEvaluate { // afterEvaluate to account for latest displayName and owners
+                project.extensions.configure(YumiLicenserGradleExtension::class.java) {
+                    val (licenseName, licenseText) = if (license != null) {
+                        license to project.extension.licenseHeader(license).get()
+                    } else {
+                        val file = project.file(customLicense)
+                        file.path to project.resources.text.fromFile(file)
+                    }
+                    project.logger.info("Configuring license header {}", licenseName)
                     val currentYear = Calendar.getInstance().get(Calendar.YEAR)
                     val firstYear = project.git?.firstCommit?.let { firstCommit ->
                         Calendar.getInstance().apply { timeInMillis = firstCommit.commitTime.toLong() * 1000 }
                             .get(Calendar.YEAR)
                     }
                     val year =
-                        if (firstYear == null || currentYear == firstYear) currentYear else "$firstYear-$currentYear"
-                    ext["year"] = year
-                    ext["projectDisplayName"] = project.extension.displayName
-                    ext["projectOwners"] = project.extension.owners
-                    if (license?.contains("GPL") == true) ext["gplVersion"] = project.properties["gpl_version"] ?: "3"
+                        if (firstYear == null || currentYear == firstYear) "$currentYear" else "$firstYear-$currentYear"
+                    val renderedText = licenseText.asString().replace("\\$\\{(.*?)}".toRegex()) { match ->
+                        when (val g = match.groups[1]!!.value) {
+                            "year" -> year
+                            "projectDisplayName" -> project.extension.displayName
+                            "projectOwners" -> project.extension.owners
+                            "gplVersion" -> project.properties["gpl_version"]?.toString() ?: "3"
+                            else -> g
+                        }
+                    }.split("\r?\n".toRegex())
+                    project.logger.debug("License header text: {}", renderedText)
+                    it.rule(HeaderRule.parse(licenseName, renderedText))
                 }
             }
         }

@@ -1,4 +1,13 @@
 ------------------------------------------------------
+Version 0.16.0
+------------------------------------------------------
+**Changes**
+- Swap out `org.cadixdev.licenser` gradle licenser plugin for the [`dev.yumi.gradle.licenser`](https://plugins.gradle.org/plugin/dev.yumi.gradle.licenser) plugin
+  - The task to update the license headers is now called `applyLicenses`, and the task for checking license headers is `checkLicenses`
+  - Behaviour should be largely unchanged
+  - Fixes an incompatibility with Gradle 9
+
+------------------------------------------------------
 Version 0.15.0
 ------------------------------------------------------
 **Changes**

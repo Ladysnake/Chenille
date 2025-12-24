@@ -31,4 +31,9 @@ interface ChenilleRepositoryHandler {
     fun terraformers()
     fun quiltMC()
     fun quiltMCSnapshot()
+
+    /**
+     * maven.uuid.gg
+     */
+    fun up()
 }

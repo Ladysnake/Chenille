@@ -1,4 +1,14 @@
 ------------------------------------------------------
+Version 0.16.1
+------------------------------------------------------
+**Additions**
+- Added quick configuration to publish to Up's maven repository (https://maven.uuid.gg)
+
+**Changes**
+- Quick maven repository configurations now leverage [exclusive content filters](https://docs.gradle.org/current/userguide/filtering_repository_content.html#sec:declaring-content-repositories)
+  - This should further reduce unnecessary HTTP calls when fetching dependencies
+
+------------------------------------------------------
 Version 0.16.0
 ------------------------------------------------------
 **Changes**

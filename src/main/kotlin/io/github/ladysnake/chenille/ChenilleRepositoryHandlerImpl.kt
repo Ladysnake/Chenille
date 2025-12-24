@@ -30,17 +30,20 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
         repositories.maven { repo ->
             repo.name = "CottonMC"
             repo.setUrl("https://server.bbkr.space/artifactory/libs-release")
-            repo.content {
+            repo.mavenContent {
                 it.includeGroup("io.github.cottonmc")
+                it.releasesOnly()
             }
         }
     }
 
     override fun cursemaven() {
-        repositories.maven { repo ->
-            repo.name = "Cursemaven"
-            repo.setUrl("https://cursemaven.com")
-            repo.content {
+        repositories.exclusiveContent { exclusive ->
+            exclusive.forRepositories(repositories.maven { repo ->
+                repo.name = "Cursemaven"
+                repo.setUrl("https://cursemaven.com")
+            })
+            exclusive.filter {
                 it.includeGroup("curse.maven")
             }
         }
@@ -49,8 +52,9 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
     override fun jamieswhiteshirt() {
         repositories.maven { repo ->
             repo.setUrl("https://maven.jamieswhiteshirt.com/libs-release/")
-            repo.content {
+            repo.mavenContent {
                 it.includeGroup("com.jamieswhiteshirt")
+                it.releasesOnly()
             }
         }
     }
@@ -59,7 +63,7 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
         repositories.maven { repo ->
             repo.name = "Jitpack"
             repo.setUrl("https://jitpack.io")
-            repo.content {
+            repo.mavenContent {
                 it.includeGroupByRegex("(io|com)\\.github\\..*")
             }
         }
@@ -69,14 +73,15 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
         repositories.maven { repo ->
             repo.name = "Ladysnake Releases"
             repo.setUrl("https://maven.ladysnake.org/releases")
-            repo.content {
-                it.includeGroupByRegex("dev\\.emi.*")
+            repo.mavenContent {
+                it.includeGroupAndSubgroups("dev.emi")
                 it.includeGroupByRegex(".*moriyashiine.*")
                 it.includeGroup("io.github.edwinmindcraft") // Origins for Forge maven group
                 it.includeGroup("io.github.ladysnake")
-                it.includeGroupByRegex("org.ladysnake.*")
-                it.includeGroup("dev.doctor4t")
+                it.includeGroupAndSubgroups("org.ladysnake")
+                it.includeGroupAndSubgroups("dev.doctor4t")
                 it.includeGroupByRegex("(dev|io\\.github)\\.onyxstudios.*")
+                it.releasesOnly()
             }
         }
     }
@@ -85,28 +90,32 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
         repositories.maven { repo ->
             repo.name = "Lucko"
             repo.setUrl("https://oss.sonatype.org/content/repositories/snapshots")
-            repo.content {
-                it.includeGroup("me.lucko")
+            repo.mavenContent {
+                it.includeGroupAndSubgroups("me.lucko")
             }
         }
     }
 
     override fun modrinth() {
-        repositories.maven { repo ->
-            repo.name = "Modrinth"
-            repo.setUrl("https://api.modrinth.com/maven")
-            repo.content {
+        repositories.exclusiveContent { exclusive ->
+            exclusive.forRepositories(repositories.maven { repo ->
+                repo.name = "Modrinth"
+                repo.setUrl("https://api.modrinth.com/maven")
+            })
+            exclusive.filter {
                 it.includeGroup("maven.modrinth")
             }
         }
     }
 
     override fun parchment() {
-        repositories.maven { repo ->
-            repo.name = "Parchment"
-            repo.setUrl("https://maven.parchmentmc.org")
-            repo.content {
-                it.includeGroup("org.parchmentmc")
+        repositories.exclusiveContent { exclusive ->
+            exclusive.forRepositories(repositories.maven { repo ->
+                repo.name = "Parchment"
+                repo.setUrl("https://maven.parchmentmc.org")
+            })
+            exclusive.filter {
+                it.includeGroupAndSubgroups("org.parchmentmc")
             }
         }
     }
@@ -114,10 +123,10 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
     override fun shedaniel() {
         repositories.maven { repo ->
             repo.setUrl("https://maven.shedaniel.me/")
-            repo.content {
-                it.includeGroupByRegex("me\\.shedaniel\\..*")
-                it.includeGroup("me.sargunvohra.mcmods")
-                it.includeGroup("dev.architectury")
+            repo.mavenContent {
+                it.includeGroupAndSubgroups("me.shedaniel")
+                it.includeGroupAndSubgroups("me.sargunvohra.mcmods")
+                it.includeGroupAndSubgroups("dev.architectury")
             }
         }
     }
@@ -126,9 +135,10 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
         repositories.maven { repo ->
             repo.name = "TerraformersMC"
             repo.setUrl("https://maven.terraformersmc.com/releases")
-            repo.content {
-                it.includeGroup("com.terraformersmc")
-                it.includeGroup("dev.emi")
+            repo.mavenContent {
+                it.includeGroupAndSubgroups("com.terraformersmc")
+                it.includeGroupAndSubgroups("dev.emi")
+                it.releasesOnly()
             }
         }
     }
@@ -137,6 +147,9 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
         repositories.maven { repo ->
             repo.name = "QuiltMC"
             repo.setUrl("https://maven.quiltmc.org/repository/release")
+            repo.mavenContent {
+                it.releasesOnly()
+            }
         }
     }
 
@@ -144,6 +157,16 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
         repositories.maven { repo ->
             repo.name = "QuiltMC Snapshot"
             repo.setUrl("https://maven.quiltmc.org/repository/snapshot")
+            repo.mavenContent {
+                it.snapshotsOnly()
+            }
+        }
+    }
+
+    override fun up() {
+        repositories.maven { repo ->
+            repo.name = "Up mod releases"
+            repo.setUrl("https://maven.uuid.gg/releases")
         }
     }
 }

@@ -1,4 +1,10 @@
 ------------------------------------------------------
+Version 0.17.0
+------------------------------------------------------
+**Additions**
+- Added support for unobfuscated minecraft versions, conditioned on the use of the `net.fabricmc.fabric-loom` gradle plugin
+
+------------------------------------------------------
 Version 0.16.1
 ------------------------------------------------------
 **Additions**

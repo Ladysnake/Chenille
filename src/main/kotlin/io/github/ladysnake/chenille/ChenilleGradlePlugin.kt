@@ -18,13 +18,11 @@
 package io.github.ladysnake.chenille
 
 import io.github.ladysnake.chenille.api.ChenilleGradleExtension
-import net.fabricmc.loom.util.Constants
 import net.fabricmc.loom.util.Constants.Configurations.INCLUDE
 import net.fabricmc.loom.util.Constants.Configurations.LOCAL_RUNTIME
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ConfigurationContainer
-import org.gradle.api.artifacts.UnknownConfigurationException
 import org.gradle.api.plugins.PluginManager
 
 @Suppress("unused") // Plugin entrypoint duh
@@ -38,7 +36,7 @@ class ChenilleGradlePlugin : Plugin<Project> {
 
         project.extensions.create(ChenilleGradleExtension::class.java, "chenille", ChenilleGradleExtensionImpl::class.java, project)
 
-        if (project.pluginManager.hasNewLoom()) {
+        if (project.hasNewLoom()) {
             setupConfigurations(project.configurations)
         } else {
             setupRemappingConfigurations(project.configurations)

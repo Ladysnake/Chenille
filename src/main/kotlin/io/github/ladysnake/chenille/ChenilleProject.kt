@@ -35,4 +35,6 @@ class ChenilleProject(private val project: Project): Project by project {
         get() = project.extensions.getByType(ChenilleGradleExtension::class.java)
 
     fun isLadysnakeProject() = project.group.toString().takeIf { it.contains("ladysnake") || it.contains("onyxstudios") } != null
+
+    fun hasNewLoom() = pluginManager.hasPlugin("net.fabricmc.fabric-loom")
 }

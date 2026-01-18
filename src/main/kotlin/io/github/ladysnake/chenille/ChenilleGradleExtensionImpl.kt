@@ -37,6 +37,7 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.resources.TextResource
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.TaskProvider
+import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.configurationcache.extensions.capitalized
 import java.io.File
@@ -92,7 +93,11 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
             var modrinth = false
             var ladysnakeArtifactLifecycle: ArtifactLifecycle? = null
 
-            override var mainArtifact: Any = project.tasks.named("remapJar", RemapJarTask::class.java).flatMap { it.archiveFile }
+            override var mainArtifact: Any = if (project.hasNewLoom()) {
+                project.tasks.named("remapJar", RemapJarTask::class.java)
+            } else {
+                project.tasks.named("jar", Jar::class.java)
+            }.flatMap { it.archiveFile }
 
             override fun withArtifactory() {
                 artifactory = true

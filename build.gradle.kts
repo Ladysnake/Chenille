@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
 plugins {
-    kotlin("jvm") version "2.2.20"
+    kotlin("jvm") version "2.3.0"
     groovy
     java
     `java-gradle-plugin`
@@ -44,8 +44,10 @@ dependencies {
     testImplementation(libs.junit.params)
     testImplementation(libs.mockk)
     testRuntimeOnly(libs.junit.engine)
+    testRuntimeOnly(libs.junit.launcher)
     "functionalTestImplementation"(platform("org.spockframework:spock-bom:2.4-groovy-4.0"))
     "functionalTestImplementation"("org.spockframework:spock-core")
+    "functionalTestImplementation"(libs.junit.launcher)
 }
 
 license {
@@ -109,7 +111,7 @@ gradlePlugin {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(25))
     }
 }
 

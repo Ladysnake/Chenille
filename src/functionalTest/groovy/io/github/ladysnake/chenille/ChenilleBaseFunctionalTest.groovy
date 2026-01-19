@@ -48,7 +48,7 @@ class ChenilleBaseFunctionalTest extends Specification {
         """
     }
 
-    def "can setup artifactory publishing"() {
+    def "can setup maven publishing"() {
         buildFile << """
             chenille {
                 configurePublishing {
@@ -59,8 +59,8 @@ class ChenilleBaseFunctionalTest extends Specification {
             ${dependencies()}
         """
         propertiesFile << """
-            artifactory_user = a
-            artifactory_api_key = b
+            ladysnake_maven_username = a
+            ladysnake_maven_password = b
         """
 
         when:

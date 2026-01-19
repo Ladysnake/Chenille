@@ -1,6 +1,9 @@
 ------------------------------------------------------
 Version 0.18.0
 ------------------------------------------------------
+**Changes**
+- Now requires Java 25
+
 **Fixes**
 - Fixed the previous publishing fix
 

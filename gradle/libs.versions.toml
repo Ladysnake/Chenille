@@ -1,12 +1,12 @@
 [versions]
 cursegradle = "1.4.0"
 licenser = "2.2.1"
-loom = "1.6-SNAPSHOT"
+loom = "1.14-SNAPSHOT"
 githubRelease = "2.2.12"
 jgit = "[6.0.0,7.0.0)"
 minotaur = "2.8.7"
 gradle-publish = "1.2.1"
-junit = "5.11.4"
+junit = "6.0.2"
 mockk = "1.13.14"
 
 [libraries]
@@ -19,6 +19,7 @@ minotaur = { module = "com.modrinth.minotaur:Minotaur", version.ref = "minotaur"
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+junit-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit" }
 junit-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
 
 [plugins]

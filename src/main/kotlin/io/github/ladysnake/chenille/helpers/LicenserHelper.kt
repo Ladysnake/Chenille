@@ -30,13 +30,13 @@ internal object LicenserHelper {
 
         project.pluginManager.apply("dev.yumi.gradle.licenser")
 
-        if (license != null || customLicense != null) {
+        if ((license != null) xor (customLicense != null)) {
             project.afterEvaluate { // afterEvaluate to account for latest displayName and owners
                 project.extensions.configure(YumiLicenserGradleExtension::class.java) {
                     val (licenseName, licenseText) = if (license != null) {
                         license to project.extension.licenseHeader(license).get()
                     } else {
-                        val file = project.file(customLicense)
+                        val file = project.file(customLicense!!) // either license is nonnull, or customLicense is
                         file.path to project.resources.text.fromFile(file)
                     }
                     project.logger.info("Configuring license header {}", licenseName)

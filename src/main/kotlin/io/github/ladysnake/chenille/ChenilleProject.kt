@@ -24,7 +24,7 @@ import org.gradle.api.Project
 
 class ChenilleProject(private val project: Project): Project by project {
     val git: JGitWrapper? by lazy {
-        try { JGitWrapper(Git.open(rootDir), project.findProperty("github_api_key")?.toString()) } catch (e: RepositoryNotFoundException) { null }
+        try { JGitWrapper(Git.open(rootDir), project.findProperty("github_api_key")?.toString()) } catch (_: RepositoryNotFoundException) { null }
     }
     val isFabricMod: Boolean
         get() = pluginManager.hasPlugin("fabric-loom")
@@ -36,5 +36,5 @@ class ChenilleProject(private val project: Project): Project by project {
 
     fun isLadysnakeProject() = project.group.toString().takeIf { it.contains("ladysnake") || it.contains("onyxstudios") } != null
 
-    fun hasNewLoom() = pluginManager.hasPlugin("net.fabricmc.fabric-loom")
+    fun usesNewLoom() = pluginManager.hasPlugin("net.fabricmc.fabric-loom")
 }

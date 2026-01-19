@@ -22,7 +22,6 @@ import io.github.ladysnake.chenille.api.ChenilleGradleExtension
 import io.github.ladysnake.chenille.api.ChenilleRepositoryHandler
 import io.github.ladysnake.chenille.api.PublishingConfiguration
 import io.github.ladysnake.chenille.api.TestmodConfiguration
-import io.github.ladysnake.chenille.helpers.ArtifactoryHelper
 import io.github.ladysnake.chenille.helpers.CurseGradleHelper
 import io.github.ladysnake.chenille.helpers.GithubReleaseHelper
 import io.github.ladysnake.chenille.helpers.LicenserHelper
@@ -39,7 +38,7 @@ import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.compile.JavaCompile
-import org.gradle.configurationcache.extensions.capitalized
+import org.gradle.internal.extensions.stdlib.capitalized
 import java.io.File
 import java.net.URL
 
@@ -87,21 +86,16 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
 
     override fun configurePublishing(action: Action<PublishingConfiguration>) {
         val cfg = object: PublishingConfiguration {
-            var artifactory = false
             var curseforge = false
             var github = false
             var modrinth = false
             var ladysnakeArtifactLifecycle: ArtifactLifecycle? = null
 
-            override var mainArtifact: Any = if (project.hasNewLoom()) {
-                project.tasks.named("remapJar", RemapJarTask::class.java)
-            } else {
+            override var mainArtifact: Any = if (project.usesNewLoom()) {
                 project.tasks.named("jar", Jar::class.java)
+            } else {
+                project.tasks.named("remapJar", RemapJarTask::class.java)
             }.flatMap { it.archiveFile }
-
-            override fun withArtifactory() {
-                artifactory = true
-            }
 
             override fun withLadysnakeMaven(lifecycle: ArtifactLifecycle) {
                 ladysnakeArtifactLifecycle = lifecycle
@@ -145,11 +139,6 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
             }
         }
 
-        if (cfg.artifactory) {
-            ArtifactoryHelper.configureDefaults(project)
-            configureReleaseSubtask("artifactoryPublish")
-        }
-
         if (cfg.ladysnakeArtifactLifecycle != null) {
             configureReleaseSubtask("publish")
         }
@@ -189,6 +178,9 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
                 baseTestRuns = true
             }
             override fun withDependencyConfiguration() {
+                if (project.usesNewLoom()) {
+                    error("Dependency configuration helper is only available for projects with remapped configurations (before MC 26.1)")
+                }
                 dependencyConfiguration = true
             }
         }.also { action.execute(it) }
@@ -226,7 +218,7 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
                     // Enable the gametest runner regardless of the framework
                     run.vmArg("-Dquilt.game_test=true")
                     run.vmArg("-Dfabric-api.gametest")
-                    run.vmArg("-Dfabric-api.gametest.report-file=${project.buildDir}/junit.xml")
+                    run.vmArg("-Dfabric-api.gametest.report-file=${project.layout.buildDirectory.asFile.get()}/junit.xml")
                     run.runDir("build/gametest")
                 }
                 it.create("autoTestServer") { run ->

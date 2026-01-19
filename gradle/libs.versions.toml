@@ -1,5 +1,4 @@
 [versions]
-artifactory = "4.27.1"
 cursegradle = "1.4.0"
 licenser = "2.2.1"
 loom = "1.6-SNAPSHOT"
@@ -11,7 +10,6 @@ junit = "5.11.4"
 mockk = "1.13.14"
 
 [libraries]
-artifactory = { module = "org.jfrog.buildinfo:build-info-extractor-gradle", version.ref = "artifactory" }
 cursegradle = { module = "gradle.plugin.com.matthewprenger:CurseGradle", version.ref = "cursegradle" }
 licenser = { module = "dev.yumi.gradle.licenser:dev.yumi.gradle.licenser.gradle.plugin", version.ref = "licenser" }
 loom = { module = "net.fabricmc:fabric-loom", version.ref = "loom" }

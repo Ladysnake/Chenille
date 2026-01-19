@@ -27,7 +27,8 @@ interface PublishingConfiguration {
     /**
      * Publishes maven artifacts to artifactory. Uses the project's publishing configuration.
      */
-    fun withArtifactory()
+    @Deprecated("Artifactory support has been removed", level = DeprecationLevel.ERROR)
+    fun withArtifactory() {}
 
     /**
      * Publishes maven artifacts to the Ladysnake maven. Uses the project's publishing configuration.

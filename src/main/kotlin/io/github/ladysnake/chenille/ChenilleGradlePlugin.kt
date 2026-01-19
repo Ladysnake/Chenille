@@ -36,7 +36,7 @@ class ChenilleGradlePlugin : Plugin<Project> {
 
         project.extensions.create(ChenilleGradleExtension::class.java, "chenille", ChenilleGradleExtensionImpl::class.java, project)
 
-        if (project.hasNewLoom()) {
+        if (project.usesNewLoom()) {
             setupConfigurations(project.configurations)
         } else {
             setupRemappingConfigurations(project.configurations)

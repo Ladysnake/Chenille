@@ -33,7 +33,6 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
     implementation(gradleApi())
-    implementation(libs.artifactory)
     implementation(libs.cursegradle)
     implementation(libs.githubRelease)
     implementation(libs.licenser)
@@ -45,7 +44,7 @@ dependencies {
     testImplementation(libs.junit.params)
     testImplementation(libs.mockk)
     testRuntimeOnly(libs.junit.engine)
-    "functionalTestImplementation"(platform("org.spockframework:spock-bom:2.0-groovy-3.0"))
+    "functionalTestImplementation"(platform("org.spockframework:spock-bom:2.4-groovy-4.0"))
     "functionalTestImplementation"("org.spockframework:spock-core")
 }
 

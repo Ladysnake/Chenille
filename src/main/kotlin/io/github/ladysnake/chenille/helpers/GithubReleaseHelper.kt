@@ -19,9 +19,10 @@ package io.github.ladysnake.chenille.helpers
 
 import com.github.breadmoirai.githubreleaseplugin.GithubReleaseExtension
 import io.github.ladysnake.chenille.ChenilleProject
+import io.github.ladysnake.chenille.api.PublishingConfiguration
 
 internal object GithubReleaseHelper {
-    fun configureDefaults(project: ChenilleProject, mainArtifact: Any) {
+    fun configureDefaults(project: ChenilleProject, cfg: PublishingConfiguration) {
         project.pluginManager.apply("com.github.breadmoirai.github-release")
 
         project.extensions.configure(GithubReleaseExtension::class.java) {
@@ -32,7 +33,7 @@ internal object GithubReleaseHelper {
             project.git?.run { it.setTargetCommitish { currentBranch() } }
             it.setBody(project.changelog)
 
-            it.setReleaseAssets(mainArtifact)
+            it.setReleaseAssets(cfg.mainArtifact)
         }
     }
 }

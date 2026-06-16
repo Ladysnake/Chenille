@@ -25,6 +25,16 @@ interface PublishingConfiguration {
     var mainArtifact: Any
 
     /**
+     * Whether this release is compatible with Quilt (default: true)
+     */
+    var quiltCompatible: Boolean
+
+    /**
+     * Whether this release is compatible with Neoforge (default: false)
+     */
+    var neoforgeCompatible: Boolean
+
+    /**
      * Publishes maven artifacts to artifactory. Uses the project's publishing configuration.
      */
     @Deprecated("Artifactory support has been removed", level = DeprecationLevel.ERROR)

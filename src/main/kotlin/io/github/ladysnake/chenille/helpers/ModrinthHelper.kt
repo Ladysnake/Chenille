@@ -21,10 +21,11 @@ import com.modrinth.minotaur.ModrinthExtension
 import com.modrinth.minotaur.dependencies.DependencyType
 import com.modrinth.minotaur.dependencies.ModDependency
 import io.github.ladysnake.chenille.ChenilleProject
+import io.github.ladysnake.chenille.api.PublishingConfiguration
 import org.gradle.api.Project.DEFAULT_VERSION
 
 internal object ModrinthHelper {
-    fun configureDefaults(project: ChenilleProject, mainArtifact: Any) {
+    fun configureDefaults(project: ChenilleProject, cfg: PublishingConfiguration) {
         project.pluginManager.apply("com.modrinth.minotaur")
 
         project.extensions.configure(ModrinthExtension::class.java) { ext ->
@@ -40,7 +41,7 @@ internal object ModrinthHelper {
                     error("Project version has not been set - is the chenille configuration specified too early?")
                 }
                 ext.versionNumber.set(project.version.toString())
-                ext.uploadFile.set(mainArtifact)
+                ext.uploadFile.set(cfg.mainArtifact)
                 ext.changelog.set(project.providers.provider(project.changelog).map { it.toString() })
                 ext.versionType.set(project.findProperty("release_type")?.toString() ?: error(
                     "Please specify the release type using the 'release_type' project property"
@@ -58,7 +59,12 @@ internal object ModrinthHelper {
                 if (project.isFabricMod) {
                     ext.loaders.add("fabric")
                 }
-                ext.loaders.add("quilt")
+                if (cfg.quiltCompatible) {
+                    ext.loaders.add("quilt")
+                }
+                if (cfg.neoforgeCompatible) {
+                    ext.loaders.add("neoforge")
+                }
 
                 fun applyRelations(key: String, type: DependencyType) {
                     if (project.hasProperty(key)) {

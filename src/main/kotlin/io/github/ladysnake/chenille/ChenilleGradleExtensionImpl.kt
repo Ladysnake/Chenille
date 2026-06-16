@@ -40,6 +40,7 @@ import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.internal.extensions.stdlib.capitalized
 import java.io.File
+import java.net.URI
 import java.net.URL
 
 open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : ChenilleGradleExtension {
@@ -69,9 +70,9 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
         project.group.toString().split('.').last().capitalized()
     }
 
-    override var github: URL? by defaulted { URL("https://github.com/$owners/$displayName") }
+    override var github: URL? by defaulted { URI("https://github.com/$owners/$displayName").toURL() }
 
-    override var changelogUrl: URL? by defaulted { URL("$github/blob/$modVersion/changelog.md") }
+    override var changelogUrl: URL? by defaulted { URI("$github/blob/$modVersion/changelog.md").toURL() }
 
     override val repositories: ChenilleRepositoryHandler
         get() = ChenilleRepositoryHandlerImpl(this.project.repositories)
@@ -96,6 +97,9 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
             } else {
                 project.tasks.named("remapJar", RemapJarTask::class.java)
             }.flatMap { it.archiveFile }
+
+            override var quiltCompatible = true
+            override var neoforgeCompatible = false
 
             override fun withLadysnakeMaven(lifecycle: ArtifactLifecycle) {
                 ladysnakeArtifactLifecycle = lifecycle
@@ -144,17 +148,17 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
         }
 
         if (cfg.curseforge) {
-            CurseGradleHelper.configureDefaults(project, cfg.mainArtifact)
+            CurseGradleHelper.configureDefaults(project, cfg)
             configureReleaseSubtask("curseforge")
         }
 
         if (cfg.github) {
-            GithubReleaseHelper.configureDefaults(project, cfg.mainArtifact)
+            GithubReleaseHelper.configureDefaults(project, cfg)
             configureReleaseSubtask("githubRelease")
         }
 
         if (cfg.modrinth) {
-            ModrinthHelper.configureDefaults(project, cfg.mainArtifact)
+            ModrinthHelper.configureDefaults(project, cfg)
             configureReleaseSubtask("modrinth")
         }
     }

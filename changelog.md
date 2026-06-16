@@ -1,4 +1,11 @@
 ------------------------------------------------------
+Version 0.19.0
+------------------------------------------------------
+**Additions**
+- Added the `quiltCompatible` and `neoforgeCompatible` properties to `PublishingConfiguration` to control
+  whether the mod should be tagged with "Quilt" and "NeoForge" on Modrinth and Curseforge (defaulting respectively to `true` and `false`)
+
+------------------------------------------------------
 Version 0.18.0
 ------------------------------------------------------
 **Changes**

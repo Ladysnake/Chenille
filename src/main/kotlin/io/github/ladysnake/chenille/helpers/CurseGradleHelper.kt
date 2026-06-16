@@ -23,9 +23,10 @@ import com.matthewprenger.cursegradle.CurseProject
 import com.matthewprenger.cursegradle.CurseRelation
 import groovy.lang.Closure
 import io.github.ladysnake.chenille.ChenilleProject
+import io.github.ladysnake.chenille.api.PublishingConfiguration
 
 internal object CurseGradleHelper {
-    fun configureDefaults(project: ChenilleProject, mainArtifact: Any) {
+    fun configureDefaults(project: ChenilleProject, cfg: PublishingConfiguration) {
         project.pluginManager.apply("com.matthewprenger.cursegradle")
 
         fun CurseRelation.applyRelation(key: String, action: CurseRelation.(String) -> Unit) {
@@ -56,11 +57,15 @@ internal object CurseGradleHelper {
                     curseforgeVersions.toString().split("; ").forEach(proj::addGameVersion)
                     if (project.isFabricMod) {
                         proj.addGameVersion("Fabric")
-                    } else {
+                    }
+                    if (cfg.quiltCompatible) {
                         proj.addGameVersion("Quilt")
                     }
+                    if (cfg.neoforgeCompatible) {
+                        proj.addGameVersion("NeoForge")
+                    }
 
-                    proj.mainArtifact(project.file(mainArtifact)) { artifact: CurseArtifact ->
+                    proj.mainArtifact(project.file(cfg.mainArtifact)) { artifact: CurseArtifact ->
                         artifact.displayName = "${project.name}-${project.version}.jar"
 
                         if (

@@ -36,5 +36,5 @@ class ChenilleProject(private val project: Project): Project by project {
 
     fun isLadysnakeProject() = project.group.toString().takeIf { it.contains("ladysnake") || it.contains("onyxstudios") } != null
 
-    fun usesNewLoom() = pluginManager.hasPlugin("net.fabricmc.fabric-loom")
+    fun usesRemapLoom() = pluginManager.hasPlugin("net.fabricmc.fabric-loom-remap")
 }

@@ -92,10 +92,10 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
             var modrinth = false
             var ladysnakeArtifactLifecycle: ArtifactLifecycle? = null
 
-            override var mainArtifact: Any = if (project.usesNewLoom()) {
-                project.tasks.named("jar", Jar::class.java)
-            } else {
+            override var mainArtifact: Any = if (project.usesRemapLoom()) {
                 project.tasks.named("remapJar", RemapJarTask::class.java)
+            } else {
+                project.tasks.named("jar", Jar::class.java)
             }.flatMap { it.archiveFile }
 
             override var quiltCompatible = true
@@ -182,7 +182,7 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
                 baseTestRuns = true
             }
             override fun withDependencyConfiguration() {
-                if (project.usesNewLoom()) {
+                if (!project.usesRemapLoom()) {
                     error("Dependency configuration helper is only available for projects with remapped configurations (before MC 26.1)")
                 }
                 dependencyConfiguration = true

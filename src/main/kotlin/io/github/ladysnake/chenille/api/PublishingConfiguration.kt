@@ -25,6 +25,11 @@ interface PublishingConfiguration {
     var mainArtifact: Any
 
     /**
+     * Whether this release is compatible with Fabric (default: true)
+     */
+    var fabricCompatible: Boolean
+
+    /**
      * Whether this release is compatible with Quilt (default: true)
      */
     var quiltCompatible: Boolean

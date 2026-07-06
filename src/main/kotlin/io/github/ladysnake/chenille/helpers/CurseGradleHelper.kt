@@ -55,7 +55,7 @@ internal object CurseGradleHelper {
                         "Please specify the compatible minecraft versions using the 'curseforge_versions' project property"
                     )
                     curseforgeVersions.toString().split("; ").forEach(proj::addGameVersion)
-                    if (project.isFabricMod) {
+                    if (cfg.fabricCompatible) {
                         proj.addGameVersion("Fabric")
                     }
                     if (cfg.quiltCompatible) {

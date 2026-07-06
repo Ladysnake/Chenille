@@ -56,7 +56,7 @@ internal object ModrinthHelper {
                 mcVersions.toString().split("; ").forEach {
                     ext.gameVersions.add(it)
                 }
-                if (project.isFabricMod) {
+                if (cfg.fabricCompatible) {
                     ext.loaders.add("fabric")
                 }
                 if (cfg.quiltCompatible) {

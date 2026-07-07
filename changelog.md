@@ -1,4 +1,15 @@
 ------------------------------------------------------
+Version 0.20.0
+------------------------------------------------------
+A release brought to you by MoriyaShiiine
+
+**Additions**
+- Added the `fabricCompatible` property to `PublishingConfiguration` to control whether the mod should be tagged with "Fabric" on Modrinth and Curseforge (defaulting to `true`)
+
+**Fixes**
+- Fixed build failures occurring when no "loom" plugin is directly applied, such as with `org.relativitymc.neo-loom`
+
+------------------------------------------------------
 Version 0.19.0
 ------------------------------------------------------
 **Additions**

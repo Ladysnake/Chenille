@@ -28,8 +28,8 @@ import org.gradle.api.plugins.PluginManager
 @Suppress("unused") // Plugin entrypoint duh
 class ChenilleGradlePlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        if (!target.pluginManager.hasLoom() && !target.pluginManager.hasPlugin("org.quiltmc.loom")) {
-            target.logger.error("No Loom plugin detected! You must apply quilt-loom or fabric-loom before chenille")
+        if (!target.pluginManager.hasLoom()) {
+            target.logger.error("No Loom plugin detected! You must apply net.fabricmc.fabric-loom (or a known variant of it) before chenille")
         }
 
         val project = ChenilleProject(target)
@@ -43,8 +43,10 @@ class ChenilleGradlePlugin : Plugin<Project> {
         }
     }
 
-    private fun PluginManager.hasLoom() = hasNewLoom() || hasPlugin("fabric-loom")
-    private fun PluginManager.hasNewLoom() = hasPlugin("net.fabricmc.fabric-loom")
+    private fun PluginManager.hasLoom() = hasFabricLoom() || hasQuiltLoom() || hasNeoLoom()
+    private fun PluginManager.hasFabricLoom() = hasPlugin("net.fabricmc.fabric-loom") || hasPlugin("net.fabricmc.fabric-loom-remap")
+    private fun PluginManager.hasQuiltLoom() = hasPlugin("org.quiltmc.loom")
+    private fun PluginManager.hasNeoLoom() = hasPlugin("org.relativitymc.neo-loom")
 
     private fun setupRemappingConfigurations(configurations: ConfigurationContainer) {
         configurations.register("modIncludeImplementation") {

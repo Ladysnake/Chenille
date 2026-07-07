@@ -98,6 +98,7 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
                 project.tasks.named("jar", Jar::class.java)
             }.flatMap { it.archiveFile }
 
+            override var fabricCompatible = true
             override var quiltCompatible = true
             override var neoforgeCompatible = false
 

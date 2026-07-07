@@ -1,7 +1,7 @@
 ------------------------------------------------------
 Version 0.20.0
 ------------------------------------------------------
-A release brought to you by MoriyaShiiine
+A release brought to you by MoriyaShiine
 
 **Additions**
 - Added the `fabricCompatible` property to `PublishingConfiguration` to control whether the mod should be tagged with "Fabric" on Modrinth and Curseforge (defaulting to `true`)

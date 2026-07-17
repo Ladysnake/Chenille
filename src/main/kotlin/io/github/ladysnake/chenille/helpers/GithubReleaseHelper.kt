@@ -20,18 +20,19 @@ package io.github.ladysnake.chenille.helpers
 import com.github.breadmoirai.githubreleaseplugin.GithubReleaseExtension
 import io.github.ladysnake.chenille.ChenilleProject
 import io.github.ladysnake.chenille.api.PublishingConfiguration
+import org.gradle.kotlin.dsl.assign
 
 internal object GithubReleaseHelper {
     fun configureDefaults(project: ChenilleProject, cfg: PublishingConfiguration) {
         project.pluginManager.apply("com.github.breadmoirai.github-release")
 
         project.extensions.configure(GithubReleaseExtension::class.java) {
-            token("${project.findProperty("github_api_key")}")
+            setToken(project.providers.gradleProperty("github_api_key"))
             // default owner: last component of maven group
             // default repo: name of the project
-            setTagName(project.version.toString())
-            project.git?.run { setTargetCommitish { currentBranch() } }
-            setBody(project.changelog)
+            tagName = project.version.toString()
+            targetCommitish = project.git?.currentBranch()
+            body = project.changelog.call().toString()
 
             setReleaseAssets(cfg.mainArtifact)
         }

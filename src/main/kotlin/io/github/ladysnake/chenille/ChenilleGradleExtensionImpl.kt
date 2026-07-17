@@ -39,6 +39,7 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.internal.extensions.stdlib.capitalized
+import org.gradle.kotlin.dsl.assign
 import java.io.File
 import java.net.URI
 import java.net.URL
@@ -213,31 +214,34 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
                 if (cfg.baseTestRuns) {
                     create("testmodClient") {
                         client()
-                        name("Testmod Client")
-                        source(testmodSourceSet)
+                        displayName = "Testmod Client"
+                        sourceSet = testmodSourceSet.name
                     }
                     create("testmodServer") {
                         server()
-                        name("Testmod Server")
-                        source(testmodSourceSet)
+                        displayName = "Testmod Server"
+                        sourceSet = testmodSourceSet.name
                     }
                 }
                 create("gametest") {
                     server()
-                    name("Game Test")
-                    source(testmodSourceSet)
+                    displayName = "Game Test"
+                    sourceSet = testmodSourceSet.name
                     // Enable the gametest runner regardless of the framework
-                    vmArg("-Dquilt.game_test=true")
-                    vmArg("-Dfabric-api.gametest")
-                    vmArg("-Dfabric-api.gametest.report-file=${project.layout.buildDirectory.asFile.get()}/junit.xml")
-                    runDir("build/gametest")
+                    jvmArguments.addAll(
+                        "-Dquilt.game_test=true",
+                        "-Dfabric-api.gametest",
+                        "-Dfabric-api.gametest.report-file=${project.layout.buildDirectory.asFile.get()}/junit.xml"
+                    )
+
+                    runDirectory = project.layout.buildDirectory.dir("gametest")
                 }
                 create("autoTestServer") {
                     server()
-                    configName = "Auto Test Server"
-                    source(testmodSourceSet)
-                    property("quilt.auto_test")
-                    programArg("--nogui")
+                    displayName = "Auto Test Server"
+                    sourceSet = testmodSourceSet.name
+                    systemProperties.put("quilt.auto_test", "true")
+                    programArguments.add("--nogui")
                 }
                 project.tasks.named("check").configure {
                     dependsOn(project.tasks.named("runGametest"))

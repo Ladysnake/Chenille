@@ -68,8 +68,8 @@ internal object ModrinthHelper {
 
                 fun applyRelations(key: String, type: DependencyType) {
                     if (project.hasProperty(key)) {
-                        project.properties[key].toString().split(";").forEach { slug ->
-                            ext.dependencies.add(ModDependency(slug.trim(), type))
+                        project.property(key).toString().split(Regex(";\\s*")).forEach { slug ->
+                            dependencies.add(ModDependency(slug.trim(), type))
                         }
                     }
                 }

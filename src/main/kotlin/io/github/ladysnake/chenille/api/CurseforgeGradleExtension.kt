@@ -22,7 +22,8 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 
-abstract class CurseforgeGradleExtensionImpl(val project: ChenilleProject) {
+//FIXME separate out interface and impl?
+abstract class CurseforgeGradleExtension(val project: ChenilleProject) {
 
     companion object {
         const val EXTENSION_NAME = "curseforge"

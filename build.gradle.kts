@@ -3,20 +3,18 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
 plugins {
-    kotlin("jvm") version "2.3.0"
     groovy
-    java
+    `java-library`
     `kotlin-dsl`
-    `java-gradle-plugin`
     `maven-publish`
     alias(libs.plugins.gradle.pluginPublish)
     alias(libs.plugins.licenser)
 }
 
 group = "io.github.ladysnake"
-version = project.properties["version"]!!
+version = project.property("version")!!
 
-val functionalTest: SourceSet by sourceSets.creating
+val functionalTest = sourceSets.register("functionalTest")
 
 repositories {
     mavenCentral()
@@ -32,7 +30,6 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
     implementation(gradleApi())
     compileOnly(gradleKotlinDsl())
     implementation(libs.curseforgegradle)
@@ -60,8 +57,8 @@ license {
         .replace("\\$\\{(.*?)}".toRegex()) {
             when (val g = it.groups[1]!!.value) {
                 "year" -> year
-                "projectDisplayName" -> project.properties["display_name"].toString()
-                "projectOwners" -> project.properties["owners"].toString()
+                "projectDisplayName" -> project.property("display_name").toString()
+                "projectOwners" -> project.property("owners").toString()
                 "gplVersion" -> "3"
                 else -> g
             }
@@ -76,7 +73,7 @@ java {
 }
 
 tasks.withType<KotlinCompile>().configureEach {
-    compilerOptions.freeCompilerArgs.add("-Xjvm-default=all")
+    compilerOptions.freeCompilerArgs.add("-jvm-default=enable")
 }
 
 tasks.withType<Test>().configureEach {
@@ -87,8 +84,8 @@ tasks.withType<Test>().configureEach {
 val functionalTestTask = tasks.register<Test>("functionalTest") {
     description = "Runs the functional tests."
     group = "verification"
-    testClassesDirs = functionalTest.output.classesDirs
-    classpath = functionalTest.runtimeClasspath
+    testClassesDirs = functionalTest.get().output.classesDirs
+    classpath = functionalTest.get().runtimeClasspath
     mustRunAfter(tasks.test)
 }
 
@@ -99,7 +96,7 @@ tasks.check {
 gradlePlugin {
     website.set("https://ladysnake.org/wiki/chenille")
     vcsUrl.set("https://github.com/ladysnake/chenille")
-    testSourceSets(functionalTest)
+    testSourceSets(functionalTest.get())
     plugins {
         create("chenille") {
             id = "io.github.ladysnake.chenille"
@@ -111,10 +108,16 @@ gradlePlugin {
     }
 }
 
+val javaVersion = 25
+
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(25))
+        languageVersion.set(JavaLanguageVersion.of(javaVersion))
     }
+}
+
+kotlin {
+    jvmToolchain(javaVersion)
 }
 
 publishing {

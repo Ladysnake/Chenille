@@ -26,14 +26,14 @@ internal object GithubReleaseHelper {
         project.pluginManager.apply("com.github.breadmoirai.github-release")
 
         project.extensions.configure(GithubReleaseExtension::class.java) {
-            it.token("${project.findProperty("github_api_key")}")
+            token("${project.findProperty("github_api_key")}")
             // default owner: last component of maven group
             // default repo: name of the project
-            it.setTagName(project.version.toString())
-            project.git?.run { it.setTargetCommitish { currentBranch() } }
-            it.setBody(project.changelog)
+            setTagName(project.version.toString())
+            project.git?.run { setTargetCommitish { currentBranch() } }
+            setBody(project.changelog)
 
-            it.setReleaseAssets(cfg.mainArtifact)
+            setReleaseAssets(cfg.mainArtifact)
         }
     }
 }

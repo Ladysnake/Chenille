@@ -18,7 +18,7 @@
 package io.github.ladysnake.chenille.helpers
 
 import io.github.ladysnake.chenille.ChenilleProject
-import io.github.ladysnake.chenille.api.CurseforgeGradleExtensionImpl
+import io.github.ladysnake.chenille.api.CurseforgeGradleExtension
 import io.github.ladysnake.chenille.api.PublishingConfiguration
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import org.gradle.api.DefaultTask
@@ -26,15 +26,15 @@ import org.gradle.api.DefaultTask
 internal object CurseGradleHelper {
     fun configureDefaults(project: ChenilleProject, cfg: PublishingConfiguration) {
         project.pluginManager.withPlugin("net.darkhax.curseforgegradle") {
-            val ext = project.extensions.getByType(CurseforgeGradleExtensionImpl::class.java)
-            val mainTask = project.tasks.register("curseforge", DefaultTask::class.java)
+            val ext = project.extensions.getByType(CurseforgeGradleExtension::class.java)
+            val mainTask = project.tasks.register(CurseforgeGradleExtension.EXTENSION_NAME, DefaultTask::class.java)
 
             if(!ext.projectId.isPresent) {
-                project.logger.lifecycle("Curseforge Project ID not configured; please define the 'curseforge_id' project property before release")
+                project.logger.warn("Curseforge Project ID not configured; please define the 'curseforge_id' project property before release")
                 return@withPlugin
             }
             if(!ext.apiKey.isPresent) {
-                project.logger.lifecycle("Curseforge API Key not configured; please define the 'curseforge_api_key' user property before release")
+                project.logger.warn("Curseforge API Key not configured; please define the 'curseforge_api_key' user property before release")
                 return@withPlugin
             }
 

@@ -36,12 +36,12 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
     }
 
     override fun cursemaven() {
-        repositories.exclusiveContent { exclusive ->
-            exclusive.forRepository {
+        repositories.exclusiveContent {
+            forRepository {
                 maven("Cursemaven", "https://cursemaven.com")
             }
-            exclusive.filter {
-                it.includeGroup("curse.maven")
+            filter {
+                includeGroup("curse.maven")
             }
         }
     }
@@ -49,8 +49,8 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
     override fun jamieswhiteshirt() {
         maven(name = "maven.jamieswhiteshirt.com", url = "https://maven.jamieswhiteshirt.com/libs-release/") {
             mavenContent {
-                it.includeGroup("com.jamieswhiteshirt")
-                it.releasesOnly()
+                includeGroup("com.jamieswhiteshirt")
+                releasesOnly()
             }
         }
     }
@@ -58,7 +58,8 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
     override fun jitpack() {
         maven("Jitpack", "https://jitpack.io") {
             mavenContent {
-                it.includeGroupByRegex("(io|com)\\.github\\..*")
+                includeGroupAndSubgroups("io.github")
+                includeGroupAndSubgroups("com.github")
             }
         }
     }
@@ -66,14 +67,15 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
     override fun ladysnake() {
         maven("Ladysnake Releases", "https://maven.ladysnake.org/releases") {
             mavenContent {
-                it.includeGroupAndSubgroups("dev.emi")
-                it.includeGroupByRegex(".*moriyashiine.*")
-                it.includeGroup("io.github.edwinmindcraft") // Origins for Forge maven group
-                it.includeGroup("io.github.ladysnake")
-                it.includeGroupAndSubgroups("org.ladysnake")
-                it.includeGroupAndSubgroups("dev.doctor4t")
-                it.includeGroupByRegex("(dev|io\\.github)\\.onyxstudios.*")
-                it.releasesOnly()
+                includeGroupAndSubgroups("dev.emi")
+                includeGroupByRegex(".*moriyashiine.*")
+                includeGroup("io.github.edwinmindcraft") // Origins for Forge maven group
+                includeGroupAndSubgroups("io.github.ladysnake")
+                includeGroupAndSubgroups("org.ladysnake")
+                includeGroupAndSubgroups("dev.doctor4t")
+                includeGroupAndSubgroups("dev.onyxstudios")
+                includeGroupByRegex("io.github.onyxstudios")
+                releasesOnly()
             }
         }
     }
@@ -81,29 +83,29 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
     override fun lucko() {
         maven("Lucko", "https://oss.sonatype.org/content/repositories/snapshots") {
             mavenContent {
-                it.includeGroupAndSubgroups("me.lucko")
+                includeGroupAndSubgroups("me.lucko")
             }
         }
     }
 
     override fun modrinth() {
-        repositories.exclusiveContent { exclusive ->
-            exclusive.forRepository {
+        repositories.exclusiveContent {
+            forRepository {
                 maven("Modrinth", "https://api.modrinth.com/maven")
             }
-            exclusive.filter {
-                it.includeGroup("maven.modrinth")
+            filter {
+                includeGroup("maven.modrinth")
             }
         }
     }
 
     override fun parchment() {
-        repositories.exclusiveContent { exclusive ->
-            exclusive.forRepository {
+        repositories.exclusiveContent {
+            forRepository {
                 maven("Parchment", "https://maven.parchmentmc.org")
             }
-            exclusive.filter {
-                it.includeGroupAndSubgroups("org.parchmentmc")
+            filter {
+                includeGroupAndSubgroups("org.parchmentmc")
             }
         }
     }
@@ -111,9 +113,9 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
     override fun shedaniel() {
         maven("maven.shedaniel.me", "https://maven.shedaniel.me/") {
             mavenContent {
-                it.includeGroupAndSubgroups("me.shedaniel")
-                it.includeGroupAndSubgroups("me.sargunvohra.mcmods")
-                it.includeGroupAndSubgroups("dev.architectury")
+                includeGroupAndSubgroups("me.shedaniel")
+                includeGroupAndSubgroups("me.sargunvohra.mcmods")
+                includeGroupAndSubgroups("dev.architectury")
             }
         }
     }
@@ -121,9 +123,9 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
     override fun terraformers() {
         maven("TerraformersMC", "https://maven.terraformersmc.com/releases") {
             mavenContent {
-                it.includeGroupAndSubgroups("com.terraformersmc")
-                it.includeGroupAndSubgroups("dev.emi")
-                it.releasesOnly()
+                includeGroupAndSubgroups("com.terraformersmc")
+                includeGroupAndSubgroups("dev.emi")
+                releasesOnly()
             }
         }
     }
@@ -131,7 +133,7 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
     override fun quiltMC() {
         maven("QuiltMC", "https://maven.quiltmc.org/repository/release") {
             mavenContent {
-                it.releasesOnly()
+                releasesOnly()
             }
         }
     }
@@ -139,7 +141,7 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
     override fun quiltMCSnapshot() {
         maven("QuiltMC Snapshot", "https://maven.quiltmc.org/repository/snapshot") {
             mavenContent {
-                it.snapshotsOnly()
+                snapshotsOnly()
             }
         }
     }

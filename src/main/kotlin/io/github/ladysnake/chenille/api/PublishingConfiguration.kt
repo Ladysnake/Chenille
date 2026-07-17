@@ -40,12 +40,6 @@ interface PublishingConfiguration {
     var neoforgeCompatible: Boolean
 
     /**
-     * Publishes maven artifacts to artifactory. Uses the project's publishing configuration.
-     */
-    @Deprecated("Artifactory support has been removed", level = DeprecationLevel.ERROR)
-    fun withArtifactory() {}
-
-    /**
      * Publishes maven artifacts to the Ladysnake maven. Uses the project's publishing configuration.
      *
      * This method uses the `ladysnake_maven_username` and `ladysnake_maven_password` properties to set maven credentials.

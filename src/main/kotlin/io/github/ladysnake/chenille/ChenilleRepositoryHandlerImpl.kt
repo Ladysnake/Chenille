@@ -20,6 +20,7 @@ package io.github.ladysnake.chenille
 import io.github.ladysnake.chenille.api.ChenilleRepositoryHandler
 import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
+import org.gradle.kotlin.dsl.maven
 import kotlin.reflect.full.declaredFunctions
 
 class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler): ChenilleRepositoryHandler {
@@ -28,19 +29,9 @@ class ChenilleRepositoryHandlerImpl(private val repositories: RepositoryHandler)
     }
 
     private inline fun maven(name: String, url: String, crossinline configure: MavenArtifactRepository.() -> Unit = {}): MavenArtifactRepository {
-        return repositories.maven { repo ->
-            repo.name = name
-            repo.setUrl(url)
-            repo.configure()
-        }
-    }
-
-    override fun cotton() {
-        maven(name = "CottonMC", url = "https://server.bbkr.space/artifactory/libs-release") {
-            mavenContent {
-                it.includeGroup("io.github.cottonmc")
-                it.releasesOnly()
-            }
+        return repositories.maven(url) {
+            this.name = name
+            configure()
         }
     }
 

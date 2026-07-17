@@ -19,7 +19,6 @@ package io.github.ladysnake.chenille.api
 
 interface ChenilleRepositoryHandler {
     fun allCommonRepositories()
-    fun cotton()
     fun cursemaven()
     fun jamieswhiteshirt()
     fun jitpack()

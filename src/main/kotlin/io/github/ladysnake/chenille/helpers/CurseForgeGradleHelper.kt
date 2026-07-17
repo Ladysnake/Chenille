@@ -23,7 +23,7 @@ import io.github.ladysnake.chenille.api.PublishingConfiguration
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import org.gradle.api.DefaultTask
 
-internal object CurseGradleHelper {
+internal object CurseForgeGradleHelper {
     fun configureDefaults(project: ChenilleProject, cfg: PublishingConfiguration) {
         project.pluginManager.withPlugin("net.darkhax.curseforgegradle") {
             val ext = project.extensions.getByType(CurseforgeGradleExtension::class.java)

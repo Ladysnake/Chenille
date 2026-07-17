@@ -22,7 +22,7 @@ import io.github.ladysnake.chenille.api.ChenilleGradleExtension
 import io.github.ladysnake.chenille.api.ChenilleRepositoryHandler
 import io.github.ladysnake.chenille.api.PublishingConfiguration
 import io.github.ladysnake.chenille.api.TestmodConfiguration
-import io.github.ladysnake.chenille.helpers.CurseGradleHelper
+import io.github.ladysnake.chenille.helpers.CurseForgeGradleHelper
 import io.github.ladysnake.chenille.helpers.GithubReleaseHelper
 import io.github.ladysnake.chenille.helpers.LicenserHelper
 import io.github.ladysnake.chenille.helpers.MavenHelper
@@ -39,7 +39,6 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.internal.extensions.stdlib.capitalized
-import org.gradle.kotlin.dsl.assign
 import java.io.File
 import java.net.URI
 import java.net.URL
@@ -155,7 +154,7 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
 
         if (cfg.curseforge) {
             project.pluginManager.apply("net.darkhax.curseforgegradle")
-            CurseGradleHelper.configureDefaults(project, cfg)
+            CurseForgeGradleHelper.configureDefaults(project, cfg)
             configureReleaseSubtask("curseforge")
         }
 

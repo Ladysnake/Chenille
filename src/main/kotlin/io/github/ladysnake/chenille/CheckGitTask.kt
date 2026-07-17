@@ -19,8 +19,10 @@ package io.github.ladysnake.chenille
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+import org.gradle.work.DisableCachingByDefault
 import javax.inject.Inject
 
+@DisableCachingByDefault
 abstract class CheckGitTask @Inject constructor(private val project: ChenilleProject): DefaultTask() {
     companion object {
         val versionBranchRegex = """\d+\.\d+(?>\.\d+)?(?>-[\w-]+)?""".toRegex()

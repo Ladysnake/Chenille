@@ -50,7 +50,7 @@ class CheckGitTaskTest {
             }
         }
         val proj = ProjectBuilder.builder().build()
-        val task = proj.tasks.create("checkGit", CheckGitTask::class.java)
-        task.run()
+        val task = proj.tasks.register("checkGit", CheckGitTask::class.java)
+        task.get().run()
     }
 }

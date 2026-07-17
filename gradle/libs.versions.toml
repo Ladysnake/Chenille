@@ -1,5 +1,5 @@
 [versions]
-cursegradle = "1.4.0"
+curseforgegradle = "1.3.33"
 licenser = "2.2.1"
 loom = "1.14-SNAPSHOT"
 githubRelease = "2.2.12"
@@ -10,7 +10,7 @@ junit = "6.0.2"
 mockk = "1.13.14"
 
 [libraries]
-cursegradle = { module = "gradle.plugin.com.matthewprenger:CurseGradle", version.ref = "cursegradle" }
+curseforgegradle = { module = "net.darkhax.curseforgegradle:net.darkhax.curseforgegradle.gradle.plugin", version.ref = "curseforgegradle" }
 licenser = { module = "dev.yumi.gradle.licenser:dev.yumi.gradle.licenser.gradle.plugin", version.ref = "licenser" }
 loom = { module = "net.fabricmc:fabric-loom", version.ref = "loom" }
 jgit = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit"}

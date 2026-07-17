@@ -149,6 +149,7 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
         }
 
         if (cfg.curseforge) {
+            project.pluginManager.apply("net.darkhax.curseforgegradle")
             CurseGradleHelper.configureDefaults(project, cfg)
             configureReleaseSubtask("curseforge")
         }

@@ -18,6 +18,7 @@
 package io.github.ladysnake.chenille
 
 import io.github.ladysnake.chenille.api.ChenilleGradleExtension
+import io.github.ladysnake.chenille.api.CurseforgeGradleExtensionImpl
 import net.fabricmc.loom.util.Constants.Configurations.INCLUDE
 import net.fabricmc.loom.util.Constants.Configurations.LOCAL_RUNTIME
 import org.gradle.api.Plugin
@@ -35,6 +36,7 @@ class ChenilleGradlePlugin : Plugin<Project> {
         val project = ChenilleProject(target)
 
         project.extensions.create(ChenilleGradleExtension::class.java, "chenille", ChenilleGradleExtensionImpl::class.java, project)
+        project.extensions.create(CurseforgeGradleExtensionImpl.EXTENSION_NAME, CurseforgeGradleExtensionImpl::class.java, project)
 
         if (project.usesRemapLoom()) {
             setupRemappingConfigurations(project.configurations)

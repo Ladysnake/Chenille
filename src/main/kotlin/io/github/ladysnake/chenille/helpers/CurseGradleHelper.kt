@@ -17,96 +17,58 @@
  */
 package io.github.ladysnake.chenille.helpers
 
-import com.matthewprenger.cursegradle.CurseArtifact
-import com.matthewprenger.cursegradle.CurseExtension
-import com.matthewprenger.cursegradle.CurseProject
-import com.matthewprenger.cursegradle.CurseRelation
-import groovy.lang.Closure
 import io.github.ladysnake.chenille.ChenilleProject
+import io.github.ladysnake.chenille.api.CurseforgeGradleExtensionImpl
 import io.github.ladysnake.chenille.api.PublishingConfiguration
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
+import org.gradle.api.DefaultTask
 
 internal object CurseGradleHelper {
     fun configureDefaults(project: ChenilleProject, cfg: PublishingConfiguration) {
-        project.pluginManager.apply("com.matthewprenger.cursegradle")
+        project.pluginManager.withPlugin("net.darkhax.curseforgegradle") {
+            val ext = project.extensions.getByType(CurseforgeGradleExtensionImpl::class.java)
+            val mainTask = project.tasks.register("curseforge", DefaultTask::class.java)
 
-        fun CurseRelation.applyRelation(key: String, action: CurseRelation.(String) -> Unit) {
-            if (project.hasProperty(key)) {
-                project.properties[key].toString().split(";").forEach { slug ->
-                    action(slug.trim())
-                }
+            if(!ext.projectId.isPresent) {
+                project.logger.lifecycle("Curseforge Project ID not configured; please define the 'curseforge_id' project property before release")
+                return@withPlugin
             }
-        }
-
-        project.extensions.configure(CurseExtension::class.java) { ext ->
-            ext.apiKey = project.findProperty("curseforge_api_key") ?: "".also {
-                println("Curseforge API Key not configured; please define the 'curseforge_api_key' user property before release")
+            if(!ext.apiKey.isPresent) {
+                project.logger.lifecycle("Curseforge API Key not configured; please define the 'curseforge_api_key' user property before release")
+                return@withPlugin
             }
 
-            if (project.hasProperty("curseforge_id")) {
-                ext.project { proj: CurseProject ->
-                    proj.id = project.findProperty("curseforge_id")
+            val publishTask = project.tasks.register("curseforge${ext.projectId.get()}", TaskPublishCurseForge::class.java) {
+                apiToken = ext.apiKey.get()
+                val mainFile = upload(ext.projectId.get(), project.file(cfg.mainArtifact))
 
-                    proj.releaseType = project.properties["release_type"] ?: throw IllegalStateException(
-                        "Please specify the release type using the 'release_type' project property"
-                    )
+                mainFile.displayName = ext.displayName.get()
 
-                    //usually automatically determined by the CurseGradle plugin, but won't work with fabric
-                    val curseforgeVersions = project.properties["curseforge_versions"] ?: throw IllegalStateException(
-                        "Please specify the compatible minecraft versions using the 'curseforge_versions' project property"
-                    )
-                    curseforgeVersions.toString().split("; ").forEach(proj::addGameVersion)
-                    if (cfg.fabricCompatible) {
-                        proj.addGameVersion("Fabric")
-                    }
-                    if (cfg.quiltCompatible) {
-                        proj.addGameVersion("Quilt")
-                    }
-                    if (cfg.neoforgeCompatible) {
-                        proj.addGameVersion("NeoForge")
-                    }
+                mainFile.changelogType = ext.changelogType.get()
+                mainFile.changelog = ext.changelogText.orNull
 
-                    proj.mainArtifact(project.file(cfg.mainArtifact)) { artifact: CurseArtifact ->
-                        artifact.displayName = "${project.name}-${project.version}.jar"
+                mainFile.gameVersions.addAll(ext.gameVersions.get())
 
-                        if (
-                            project.hasProperty("cf_requirements") ||
-                            project.hasProperty("cf_optionals") ||
-                            project.hasProperty("cf_embeddeds") ||
-                            project.hasProperty("cf_tools") ||
-                            project.hasProperty("cf_incompatibles") ||
-                            project.hasProperty("cf_includes")
-                        ) {
-                            artifact.relations { relations: CurseRelation ->
-                                relations.applyRelation("cf_requirements") { requiredDependency(it) }
-                                relations.applyRelation("cf_optionals") { optionalDependency(it) }
-                                relations.applyRelation("cf_embeddeds") { embeddedLibrary(it) }
-                                relations.applyRelation("cf_tools") { tool(it) }
-                                relations.applyRelation("cf_incompatibles") { incompatible(it) }
-                            }
-                        }
-                    }
-
-                    proj.changelogType = "markdown"
-                    proj.changelog = project.changelog
+                // usually automatically determined by CurseForgeGradle
+                if (cfg.fabricCompatible) {
+                    mainFile.gameVersions.add("Fabric")
                 }
-            } else {
-                println("Curseforge Project ID not configured; please define the 'curseforge_id' project property before release")
+                if (cfg.quiltCompatible) {
+                    mainFile.gameVersions.add("Quilt")
+                }
+                if (cfg.neoforgeCompatible) {
+                    mainFile.gameVersions.add("NeoForge")
+                }
+
+                // override environments if provided
+                ext.supportedEnvironments.orNull?.let { mainFile.addEnvironment(*it.toTypedArray()) }
+
+                ext.relationsRequired.orNull?.let { mainFile.addRequirement(*it.toTypedArray()) }
+                ext.relationsOptional.orNull?.let { mainFile.addOptional(*it.toTypedArray()) }
+                ext.relationsEmbedded.orNull?.let { mainFile.addEmbedded(*it.toTypedArray()) }
+                ext.relationsTool.orNull?.let { mainFile.addTool(*it.toTypedArray()) }
+                ext.relationsIncompatible.orNull?.let { mainFile.addIncompatibility(*it.toTypedArray()) }
             }
         }
     }
-
-    private fun CurseExtension.project(action: (CurseProject) -> Unit) = project(object : Closure<Unit>(this, this) {
-        @Suppress("unused") // to be called dynamically by Groovy
-        fun doCall(proj: CurseProject) = action(proj)
-    })
-
-    private fun CurseProject.mainArtifact(artifact: Any, action: (CurseArtifact) -> Unit) = mainArtifact(artifact, object: Closure<Unit>(this, this) {
-        @Suppress("unused") // to be called dynamically by Groovy
-        fun doCall(artif: CurseArtifact) = action(artif)
-    })
-
-    private fun CurseArtifact.relations(action: (CurseRelation) -> Unit) = relations(object: Closure<Unit>(this, this) {
-        @Suppress("unused") // to be called dynamically by Groovy
-        fun doCall(rel: CurseRelation) = action(rel)
-    })
 }

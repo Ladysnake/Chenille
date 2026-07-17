@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version "2.3.0"
     groovy
     java
+    `kotlin-dsl`
     `java-gradle-plugin`
     `maven-publish`
     alias(libs.plugins.gradle.pluginPublish)
@@ -33,7 +34,8 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
     implementation(gradleApi())
-    implementation(libs.cursegradle)
+    compileOnly(gradleKotlinDsl())
+    implementation(libs.curseforgegradle)
     implementation(libs.githubRelease)
     implementation(libs.licenser)
     implementation(libs.jgit)

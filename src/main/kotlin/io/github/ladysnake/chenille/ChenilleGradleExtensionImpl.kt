@@ -39,6 +39,7 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.internal.extensions.stdlib.capitalized
+import org.gradle.kotlin.dsl.assign
 import java.io.File
 import java.net.URI
 import java.net.URL
@@ -132,40 +133,39 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
             dependsOn(checkGitStatus)
         }
 
-        fun configureReleaseSubtask(name: String) {
+        fun configureReleaseSubtask(task: TaskProvider<out Task>) {
+            task.configure { mustRunAfter(checkGitStatus) }
+            release.configure { dependsOn(task) }
+        }
+
+        fun configureReleaseSubtaskByName(name: String) {
             try {
-                val subtask = project.tasks.named(name).configure {
-                    mustRunAfter(checkGitStatus)
-                }
-                release.configure {
-                    dependsOn(subtask)
-                }
+                configureReleaseSubtask(project.tasks.named(name))
             } catch (_: UnknownTaskException) {
                 release.configure {
-                    onlyIf("NO-TASKS") { false }
                     doFirst { project.logger.warn("Task $name not found; skipping it for release") }
                 }
             }
         }
 
         if (cfg.ladysnakeArtifactLifecycle != null) {
-            configureReleaseSubtask("publish")
+            configureReleaseSubtaskByName("publish")
         }
 
         if (cfg.curseforge) {
             project.pluginManager.apply("net.darkhax.curseforgegradle")
-            CurseForgeGradleHelper.configureDefaults(project, cfg)
-            configureReleaseSubtask("curseforge")
+            val task = CurseForgeGradleHelper.configureDefaults(project, cfg)
+            configureReleaseSubtask(task)
         }
 
         if (cfg.github) {
             GithubReleaseHelper.configureDefaults(project, cfg)
-            configureReleaseSubtask("githubRelease")
+            configureReleaseSubtaskByName("githubRelease")
         }
 
         if (cfg.modrinth) {
             ModrinthHelper.configureDefaults(project, cfg)
-            configureReleaseSubtask("modrinth")
+            configureReleaseSubtaskByName("modrinth")
         }
     }
 

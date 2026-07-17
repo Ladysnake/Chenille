@@ -22,12 +22,18 @@ import io.github.ladysnake.chenille.api.CurseforgeGradleExtension
 import io.github.ladysnake.chenille.api.PublishingConfiguration
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import org.gradle.api.DefaultTask
+import org.gradle.api.Task
+import org.gradle.api.tasks.TaskProvider
 
 internal object CurseForgeGradleHelper {
-    fun configureDefaults(project: ChenilleProject, cfg: PublishingConfiguration) {
+    fun configureDefaults(project: ChenilleProject, cfg: PublishingConfiguration): TaskProvider<out Task> {
+
+        val mainTask = project.tasks.register("curseforge", DefaultTask::class.java) {
+            description = "Main task for publishing to Curseforge"
+        }
+
         project.pluginManager.withPlugin("net.darkhax.curseforgegradle") {
             val ext = project.extensions.getByType(CurseforgeGradleExtension::class.java)
-            val mainTask = project.tasks.register(CurseforgeGradleExtension.EXTENSION_NAME, DefaultTask::class.java)
 
             if(!ext.projectId.isPresent) {
                 project.logger.warn("Curseforge Project ID not configured; please define the 'curseforge_id' project property before release")
@@ -69,6 +75,12 @@ internal object CurseForgeGradleHelper {
                 ext.relationsTool.orNull?.let { mainFile.addTool(*it.toTypedArray()) }
                 ext.relationsIncompatible.orNull?.let { mainFile.addIncompatibility(*it.toTypedArray()) }
             }
+
+            mainTask.configure {
+                dependsOn(publishTask)
+            }
         }
+
+        return mainTask
     }
 }

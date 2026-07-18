@@ -55,6 +55,10 @@ internal object CurseForgeGradleHelper {
 
                 mainFile.gameVersions.addAll(ext.gameVersions.get())
 
+                if(ext.releaseType.isPresent) {
+                    mainFile.releaseType = ext.releaseType.get()
+                }
+
                 // usually automatically determined by CurseForgeGradle
                 if (cfg.fabricCompatible) {
                     mainFile.gameVersions.add("Fabric")

@@ -45,6 +45,8 @@ internal object CurseForgeGradleHelper {
             }
 
             val publishTask = project.tasks.register("curseforge${ext.projectId.get()}", TaskPublishCurseForge::class.java) {
+                inputs.file(cfg.mainArtifact)
+
                 apiToken = ext.apiKey.get()
                 val mainFile = upload(ext.projectId.get(), project.file(cfg.mainArtifact))
 

@@ -27,7 +27,7 @@ internal object GithubReleaseHelper {
         project.pluginManager.apply("com.github.breadmoirai.github-release")
 
         project.extensions.configure(GithubReleaseExtension::class.java) {
-            setToken(project.providers.gradleProperty("github_api_key"))
+            setToken(project.provider { project.findProperty("github_api_key").toString() })
             // default owner: last component of maven group
             // default repo: name of the project
             tagName = project.version.toString()

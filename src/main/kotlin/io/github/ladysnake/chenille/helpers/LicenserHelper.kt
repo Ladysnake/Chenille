@@ -52,7 +52,7 @@ internal object LicenserHelper {
                             "year" -> year
                             "projectDisplayName" -> project.extension.displayName
                             "projectOwners" -> project.extension.owners
-                            "gplVersion" -> providers.gradleProperty("gpl_version").orNull ?: "3"
+                            "gplVersion" -> project.findProperty("gpl_version")?.toString() ?: "3"
                             else -> g
                         }
                     }.split("\r?\n".toRegex())

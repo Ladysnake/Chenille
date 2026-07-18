@@ -48,23 +48,23 @@ abstract class CurseforgeGradleExtension(val project: ChenilleProject) {
     abstract val relationsIncompatible: ListProperty<String>
 
     init {
-        apiKey.convention(project.providers.gradleProperty("curseforge_api_key"))
-        projectId.convention(project.providers.gradleProperty("curseforge_id"))
+        apiKey.convention(project.provider { project.findProperty("curseforge_api_key")?.toString() })
+        projectId.convention(project.provider { project.findProperty("curseforge_id")?.toString() })
 
-        releaseType.convention(project.providers.gradleProperty("release_type"))
-        displayName.convention(project.providers.gradleProperty("curseforge_display_name").orElse(project.provider { "${project.name}-${project.version}.jar" }))
+        releaseType.convention(project.provider { project.findProperty("release_type")?.toString() })
+        displayName.convention(project.provider { project.findProperty("curseforge_display_name")?.toString() }.orElse(project.provider { "${project.name}-${project.version}.jar" }))
 
-        gameVersions.convention(project.providers.gradleProperty("curseforge_versions").split())
-        supportedEnvironments.convention(project.providers.gradleProperty("curseforge_environments").split())
+        gameVersions.convention(project.provider { project.findProperty("curseforge_versions")?.toString() }.split())
+        supportedEnvironments.convention(project.provider { project.findProperty("curseforge_environments")?.toString() }.split())
 
         changelogType.convention("markdown")
         changelogText.convention(project.provider { project.changelog.call().toString() })
 
-        relationsRequired.convention(project.providers.gradleProperty("cf_requirements").split())
-        relationsOptional.convention(project.providers.gradleProperty("cf_optionals").split())
-        relationsEmbedded.convention(project.providers.gradleProperty("cf_embeddeds").split())
-        relationsTool.convention(project.providers.gradleProperty("cf_tools").split())
-        relationsIncompatible.convention(project.providers.gradleProperty("cf_incompatibles").split())
+        relationsRequired.convention(project.provider { project.findProperty("cf_requirements")?.toString() }.split())
+        relationsOptional.convention(project.provider { project.findProperty("cf_optionals")?.toString() }.split())
+        relationsEmbedded.convention(project.provider { project.findProperty("cf_embeddeds")?.toString() }.split())
+        relationsTool.convention(project.provider { project.findProperty("cf_tools")?.toString() }.split())
+        relationsIncompatible.convention(project.provider { project.findProperty("cf_incompatibles")?.toString() }.split())
     }
 
     private fun Provider<String>.split(): Provider<List<String>> = this.map { it.split(Regex(";\\s*")) }

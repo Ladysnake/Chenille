@@ -227,11 +227,9 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
                     displayName = "Game Test"
                     sourceSet = testmodSourceSet.name
                     // Enable the gametest runner regardless of the framework
-                    jvmArguments.addAll(
-                        "-Dquilt.game_test=true",
-                        "-Dfabric-api.gametest",
-                        "-Dfabric-api.gametest.report-file=${project.layout.buildDirectory.asFile.get()}/junit.xml"
-                    )
+                    systemProperties.put("quilt.game_test", "true")
+                    systemProperties.put("fabric-api.game_test", "true")
+                    systemProperties.put("fabric-api.gametest.report-file", project.layout.buildDirectory.file("junit.xml").get().asFile.absolutePath)
 
                     runDirectory = project.layout.buildDirectory.dir("gametest")
                 }

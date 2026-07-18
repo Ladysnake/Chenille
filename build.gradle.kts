@@ -5,8 +5,9 @@ import java.util.*
 plugins {
     groovy
     `java-library`
-    `kotlin-dsl`
+    `kotlin-dsl` // kotlin version is whatever Gradle bundles right now
     `maven-publish`
+    `java-gradle-plugin`
     alias(libs.plugins.gradle.pluginPublish)
     alias(libs.plugins.licenser)
 }

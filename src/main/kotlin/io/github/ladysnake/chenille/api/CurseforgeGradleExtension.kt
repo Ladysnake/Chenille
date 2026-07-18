@@ -22,7 +22,6 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 
-//FIXME separate out interface and impl?
 abstract class CurseforgeGradleExtension(val project: ChenilleProject) {
 
     companion object {

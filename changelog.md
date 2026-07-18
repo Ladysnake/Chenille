@@ -1,4 +1,19 @@
 ------------------------------------------------------
+Version 0.21.0
+------------------------------------------------------
+An update by Up (massive thanks to her)
+
+**Changes**
+- The underlying Curseforge Gradle plugin is now `curseforgegradle` by Darkhax, instead of the old unmaintained cursegradle
+
+**Fixes**
+- Fixed compatibility with new Curseforge release API
+
+**Removals**
+- Removed deprecated Artifactory helper
+- Removed dead CottonMC maven from the list of repository helpers
+
+------------------------------------------------------
 Version 0.20.1
 ------------------------------------------------------
 A patch brought to you by MoriyaShiine

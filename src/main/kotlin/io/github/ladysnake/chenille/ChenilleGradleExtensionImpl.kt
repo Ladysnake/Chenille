@@ -22,7 +22,7 @@ import io.github.ladysnake.chenille.api.ChenilleGradleExtension
 import io.github.ladysnake.chenille.api.ChenilleRepositoryHandler
 import io.github.ladysnake.chenille.api.PublishingConfiguration
 import io.github.ladysnake.chenille.api.TestmodConfiguration
-import io.github.ladysnake.chenille.helpers.CurseGradleHelper
+import io.github.ladysnake.chenille.helpers.CurseForgeGradleHelper
 import io.github.ladysnake.chenille.helpers.GithubReleaseHelper
 import io.github.ladysnake.chenille.helpers.LicenserHelper
 import io.github.ladysnake.chenille.helpers.MavenHelper
@@ -39,6 +39,7 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.internal.extensions.stdlib.capitalized
+import org.gradle.kotlin.dsl.assign
 import java.io.File
 import java.net.URI
 import java.net.URL
@@ -48,7 +49,7 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
 
     override var javaVersion: Int by defaulted { 17 } withListener { value ->
         project.tasks.withType(JavaCompile::class.java).configureEach {
-            it.options.release.set(value)
+            options.release.set(value)
         }
     }
 
@@ -127,40 +128,44 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
             project.tasks.register("checkGitStatus", CheckGitTask::class.java, project)
 
         val release: TaskProvider<Task> = project.tasks.register("release") {
-            it.group = "publishing"
-            it.description = "Releases a new version to Maven, Github, Curseforge and Modrinth"
-            it.dependsOn(checkGitStatus)
+            group = "publishing"
+            description = "Releases a new version to Maven, Github, Curseforge and Modrinth"
+            dependsOn(checkGitStatus)
         }
 
-        fun configureReleaseSubtask(name: String) {
+        fun configureReleaseSubtask(task: TaskProvider<out Task>) {
+            task.configure { mustRunAfter(checkGitStatus) }
+            release.configure { dependsOn(task) }
+        }
+
+        fun configureReleaseSubtaskByName(name: String) {
             try {
-                val subtask = project.tasks.named(name)
-                subtask.configure { it.mustRunAfter(checkGitStatus) }
-                release.configure { it.dependsOn(subtask) }
+                configureReleaseSubtask(project.tasks.named(name))
             } catch (_: UnknownTaskException) {
                 release.configure {
-                    it.doFirst { project.logger.warn("Task $name not found; skipping it for release") }
+                    doFirst { project.logger.warn("Task $name not found; skipping it for release") }
                 }
             }
         }
 
         if (cfg.ladysnakeArtifactLifecycle != null) {
-            configureReleaseSubtask("publish")
+            configureReleaseSubtaskByName("publish")
         }
 
         if (cfg.curseforge) {
-            CurseGradleHelper.configureDefaults(project, cfg)
-            configureReleaseSubtask("curseforge")
+            project.pluginManager.apply("net.darkhax.curseforgegradle")
+            val task = CurseForgeGradleHelper.configureDefaults(project, cfg)
+            configureReleaseSubtask(task)
         }
 
         if (cfg.github) {
             GithubReleaseHelper.configureDefaults(project, cfg)
-            configureReleaseSubtask("githubRelease")
+            configureReleaseSubtaskByName("githubRelease")
         }
 
         if (cfg.modrinth) {
             ModrinthHelper.configureDefaults(project, cfg)
-            configureReleaseSubtask("modrinth")
+            configureReleaseSubtaskByName("modrinth")
         }
     }
 
@@ -192,49 +197,51 @@ open class ChenilleGradleExtensionImpl(private val project: ChenilleProject) : C
 
         val sourceSets = project.extensions.getByType(SourceSetContainer::class.java)
         val main = sourceSets.getByName("main")
-        val testmodSourceSet = sourceSets.create("testmod") { testmod ->
-            testmod.compileClasspath += main.compileClasspath
-            testmod.runtimeClasspath += main.runtimeClasspath
+        val testmodSourceSet = sourceSets.create("testmod") {
+            compileClasspath += main.compileClasspath
+            runtimeClasspath += main.runtimeClasspath
         }
 
         project.dependencies.add("testmodImplementation", main.output)
 
-        project.extensions.configure<LoomGradleExtensionAPI>("loom") { loom ->
+        project.extensions.configure<LoomGradleExtensionAPI>("loom") {
             if (cfg.dependencyConfiguration) {
-                loom.createRemapConfigurations(testmodSourceSet)
+                createRemapConfigurations(testmodSourceSet)
             }
-            loom.runs {
+
+            runs {
                 if (cfg.baseTestRuns) {
-                    it.create("testmodClient") { run ->
-                        run.client()
-                        run.name("Testmod Client")
-                        run.source(testmodSourceSet)
+                    create("testmodClient") {
+                        client()
+                        displayName = "Testmod Client"
+                        sourceSet = testmodSourceSet.name
                     }
-                    it.create("testmodServer") { run ->
-                        run.server()
-                        run.name("Testmod Server")
-                        run.source(testmodSourceSet)
+                    create("testmodServer") {
+                        server()
+                        displayName = "Testmod Server"
+                        sourceSet = testmodSourceSet.name
                     }
                 }
-                it.create("gametest") { run ->
-                    run.server()
-                    run.name("Game Test")
-                    run.source(testmodSourceSet)
+                create("gametest") {
+                    server()
+                    displayName = "Game Test"
+                    sourceSet = testmodSourceSet.name
                     // Enable the gametest runner regardless of the framework
-                    run.vmArg("-Dquilt.game_test=true")
-                    run.vmArg("-Dfabric-api.gametest")
-                    run.vmArg("-Dfabric-api.gametest.report-file=${project.layout.buildDirectory.asFile.get()}/junit.xml")
-                    run.runDir("build/gametest")
+                    systemProperties.put("quilt.game_test", "true")
+                    systemProperties.put("fabric-api.game_test", "true")
+                    systemProperties.put("fabric-api.gametest.report-file", project.layout.buildDirectory.file("junit.xml").get().asFile.absolutePath)
+
+                    runDirectory = project.layout.buildDirectory.dir("gametest")
                 }
-                it.create("autoTestServer") { run ->
-                    run.server()
-                    run.configName = "Auto Test Server"
-                    run.source(testmodSourceSet)
-                    run.property("quilt.auto_test")
-                    run.programArg("--nogui")
+                create("autoTestServer") {
+                    server()
+                    displayName = "Auto Test Server"
+                    sourceSet = testmodSourceSet.name
+                    systemProperties.put("quilt.auto_test", "true")
+                    programArguments.add("--nogui")
                 }
-                project.tasks.named("check") { check ->
-                    check.dependsOn(project.tasks.named("runGametest"))
+                project.tasks.named("check").configure {
+                    dependsOn(project.tasks.named("runGametest"))
                 }
             }
         }

@@ -28,22 +28,22 @@ internal object ModrinthHelper {
     fun configureDefaults(project: ChenilleProject, cfg: PublishingConfiguration) {
         project.pluginManager.apply("com.modrinth.minotaur")
 
-        project.extensions.configure(ModrinthExtension::class.java) { ext ->
+        project.extensions.configure(ModrinthExtension::class.java) {
             if (project.hasProperty("modrinth_api_key")) {
-                ext.token.set(project.findProperty("modrinth_api_key")!!.toString())
+                token.set(project.findProperty("modrinth_api_key")!!.toString())
             } else {
-                println("Modrinth API Key not configured; please define the 'modrinth_api_key' user property before release")
+                project.logger.warn("Modrinth API Key not configured; please define the 'modrinth_api_key' user property before release")
                 return@configure
             }
             if (project.hasProperty("modrinth_id")) {
-                ext.projectId.set(project.findProperty("modrinth_id")!!.toString())
+                projectId.set(project.findProperty("modrinth_id")!!.toString())
                 if (project.version == DEFAULT_VERSION) {
                     error("Project version has not been set - is the chenille configuration specified too early?")
                 }
-                ext.versionNumber.set(project.version.toString())
-                ext.uploadFile.set(cfg.mainArtifact)
-                ext.changelog.set(project.providers.provider(project.changelog).map { it.toString() })
-                ext.versionType.set(project.findProperty("release_type")?.toString() ?: error(
+                versionNumber.set(project.version.toString())
+                uploadFile.set(cfg.mainArtifact)
+                changelog.set(project.providers.provider(project.changelog).map { it.toString() })
+                versionType.set(project.findProperty("release_type")?.toString() ?: error(
                     "Please specify the release type using the 'release_type' project property"
                 ))
                 val mcVersions = (
@@ -54,22 +54,22 @@ internal object ModrinthHelper {
                     error("Missing one of the properties 'modrinth_versions', 'curseforge_versions', or 'minecraft_version'")
                 }
                 mcVersions.toString().split("; ").forEach {
-                    ext.gameVersions.add(it)
+                    gameVersions.add(it)
                 }
                 if (cfg.fabricCompatible) {
-                    ext.loaders.add("fabric")
+                    loaders.add("fabric")
                 }
                 if (cfg.quiltCompatible) {
-                    ext.loaders.add("quilt")
+                    loaders.add("quilt")
                 }
                 if (cfg.neoforgeCompatible) {
-                    ext.loaders.add("neoforge")
+                    loaders.add("neoforge")
                 }
 
                 fun applyRelations(key: String, type: DependencyType) {
                     if (project.hasProperty(key)) {
-                        project.properties[key].toString().split(";").forEach { slug ->
-                            ext.dependencies.add(ModDependency(slug.trim(), type))
+                        project.property(key).toString().split(Regex(";\\s*")).forEach { slug ->
+                            dependencies.add(ModDependency(slug.trim(), type))
                         }
                     }
                 }

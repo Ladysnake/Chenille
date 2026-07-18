@@ -21,7 +21,6 @@ import io.mockk.every
 import io.mockk.mockk
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 
@@ -32,7 +31,6 @@ class CheckGitTaskTest {
         Assertions.assertTrue(CheckGitTask.versionBranchRegex.matches(branchName))
     }
 
-    @Disabled("Groovy module issues I am too lazy to fix")
     @ParameterizedTest
     @ValueSource(strings = ["1.21", "1.21.1", "1.21.1-fabric", "1.20-quilt"])
     fun `nominal case`(branchName: String) {
@@ -50,7 +48,7 @@ class CheckGitTaskTest {
             }
         }
         val proj = ProjectBuilder.builder().build()
-        val task = proj.tasks.create("checkGit", CheckGitTask::class.java)
-        task.run()
+        val task = proj.tasks.register("checkGit", CheckGitTask::class.java, project)
+        task.get().run()
     }
 }

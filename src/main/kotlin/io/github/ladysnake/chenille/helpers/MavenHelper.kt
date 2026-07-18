@@ -21,21 +21,21 @@ import io.github.ladysnake.chenille.ChenilleProject
 import io.github.ladysnake.chenille.api.ArtifactLifecycle
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
-import java.net.URI
+import org.gradle.kotlin.dsl.maven
 
 internal object MavenHelper {
     fun configureDefaults(project: ChenilleProject, artifactLifecycle: ArtifactLifecycle?) {
         project.pluginManager.apply("maven-publish")
 
-        project.extensions.configure(PublishingExtension::class.java) { ext ->
-            ext.publications { pubs ->
-                if (pubs.findByName("mavenJava") == null) {
-                    pubs.create("mavenJava", MavenPublication::class.java) { pub ->
-                        pub.from(project.components.getByName("java"))
+        project.extensions.configure(PublishingExtension::class.java) {
+            publications {
+                if (this.findByName("mavenJava") == null) {
+                    create("mavenJava", MavenPublication::class.java) {
+                        from(project.components.getByName("java"))
                     }
                 }
             }
-            ext.repositories { repos ->
+            repositories {
                 if (artifactLifecycle != null) {
                     val ladysnakeMaven = when (artifactLifecycle) {
                         ArtifactLifecycle.AUTO -> if (project.version.toString().endsWith("-SNAPSHOT")) LadysnakeMaven.SNAPSHOTS else LadysnakeMaven.RELEASES
@@ -45,12 +45,11 @@ internal object MavenHelper {
                     val ladysnakeMavenUsername = project.findProperty("ladysnake_maven_username")
                     val ladysnakeMavenPassword = project.findProperty("ladysnake_maven_password")
                     if (ladysnakeMavenUsername is String && ladysnakeMavenPassword is String) {
-                        repos.maven { repo ->
-                            repo.name = ladysnakeMaven.mavenName
-                            repo.url = URI("https://maven.ladysnake.org/${ladysnakeMaven.path}/")
-                            repo.credentials {
-                                it.username = ladysnakeMavenUsername
-                                it.password = ladysnakeMavenPassword
+                        maven("https://maven.ladysnake.org/${ladysnakeMaven.path}") {
+                            name = ladysnakeMaven.mavenName
+                            credentials {
+                                username = ladysnakeMavenUsername
+                                password = ladysnakeMavenPassword
                             }
                         }
                     } else {

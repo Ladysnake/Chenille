@@ -18,6 +18,7 @@
 package io.github.ladysnake.chenille
 
 import io.github.ladysnake.chenille.api.ChenilleGradleExtension
+import io.github.ladysnake.chenille.api.CurseforgeGradleExtension
 import net.fabricmc.loom.util.Constants.Configurations.INCLUDE
 import net.fabricmc.loom.util.Constants.Configurations.LOCAL_RUNTIME
 import org.gradle.api.Plugin
@@ -35,6 +36,7 @@ class ChenilleGradlePlugin : Plugin<Project> {
         val project = ChenilleProject(target)
 
         project.extensions.create(ChenilleGradleExtension::class.java, "chenille", ChenilleGradleExtensionImpl::class.java, project)
+        project.extensions.create(CurseforgeGradleExtension.EXTENSION_NAME, CurseforgeGradleExtension::class.java, project)
 
         if (project.usesRemapLoom()) {
             setupRemappingConfigurations(project.configurations)
@@ -50,31 +52,31 @@ class ChenilleGradlePlugin : Plugin<Project> {
 
     private fun setupRemappingConfigurations(configurations: ConfigurationContainer) {
         configurations.register("modIncludeImplementation") {
-            configurations.getByName("modImplementation").extendsFrom(it)
-            configurations.getByName(INCLUDE).extendsFrom(it)
+            configurations.getByName("modImplementation").extendsFrom(this)
+            configurations.getByName(INCLUDE).extendsFrom(this)
         }
         configurations.register("modIncludeApi") {
-            configurations.getByName("modApi").extendsFrom(it)
-            configurations.getByName(INCLUDE).extendsFrom(it)
+            configurations.getByName("modApi").extendsFrom(this)
+            configurations.getByName(INCLUDE).extendsFrom(this)
         }
         configurations.register("modLocalImplementation") {
-            configurations.getByName("modCompileOnly").extendsFrom(it)
-            configurations.getByName("modLocalRuntime").extendsFrom(it)
+            configurations.getByName("modCompileOnly").extendsFrom(this)
+            configurations.getByName("modLocalRuntime").extendsFrom(this)
         }
     }
 
     private fun setupConfigurations(configurations: ConfigurationContainer) {
         configurations.register("includeImplementation") {
-            configurations.getByName("implementation").extendsFrom(it)
-            configurations.getByName(INCLUDE).extendsFrom(it)
+            configurations.getByName("implementation").extendsFrom(this)
+            configurations.getByName(INCLUDE).extendsFrom(this)
         }
         configurations.register("includeApi") {
-            configurations.getByName("api").extendsFrom(it)
-            configurations.getByName(INCLUDE).extendsFrom(it)
+            configurations.getByName("api").extendsFrom(this)
+            configurations.getByName(INCLUDE).extendsFrom(this)
         }
         configurations.register("localImplementation") {
-            configurations.getByName("compileOnly").extendsFrom(it)
-            configurations.getByName(LOCAL_RUNTIME).extendsFrom(it)
+            configurations.getByName("compileOnly").extendsFrom(this)
+            configurations.getByName(LOCAL_RUNTIME).extendsFrom(this)
         }
     }
 }

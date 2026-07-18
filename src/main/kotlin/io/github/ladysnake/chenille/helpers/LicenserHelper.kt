@@ -52,12 +52,12 @@ internal object LicenserHelper {
                             "year" -> year
                             "projectDisplayName" -> project.extension.displayName
                             "projectOwners" -> project.extension.owners
-                            "gplVersion" -> project.properties["gpl_version"]?.toString() ?: "3"
+                            "gplVersion" -> providers.gradleProperty("gpl_version").orNull ?: "3"
                             else -> g
                         }
                     }.split("\r?\n".toRegex())
                     project.logger.debug("License header text: {}", renderedText)
-                    it.rule(HeaderRule.parse(licenseName, renderedText))
+                    rule(HeaderRule.parse(licenseName, renderedText))
                 }
             }
         }

@@ -29,6 +29,7 @@ internal object CurseForgeGradleHelper {
     fun configureDefaults(project: ChenilleProject, cfg: PublishingConfiguration): TaskProvider<out Task> {
 
         val mainTask = project.tasks.register("curseforge", DefaultTask::class.java) {
+            group = "publishing"
             description = "Main task for publishing to Curseforge"
         }
 
@@ -45,6 +46,9 @@ internal object CurseForgeGradleHelper {
             }
 
             val publishTask = project.tasks.register("curseforge${ext.projectId.get()}", TaskPublishCurseForge::class.java) {
+                group = "publishing"
+                description = "Publish project ${ext.projectId.get()} to Curseforge"
+
                 inputs.file(cfg.mainArtifact)
 
                 apiToken = ext.apiKey.get()

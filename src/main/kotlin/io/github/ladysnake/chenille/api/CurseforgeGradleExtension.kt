@@ -48,7 +48,7 @@ abstract class CurseforgeGradleExtension(val project: ChenilleProject) {
     abstract val relationsIncompatible: ListProperty<String>
 
     init {
-        apiKey.convention(project.provider { project.findProperty("curseforge_api_key")?.toString() })
+        apiKey.convention(project.providers.gradleProperty("curseforge_api_key"))
         projectId.convention(project.provider { project.findProperty("curseforge_id")?.toString() })
 
         releaseType.convention(project.provider { project.findProperty("release_type")?.toString() })

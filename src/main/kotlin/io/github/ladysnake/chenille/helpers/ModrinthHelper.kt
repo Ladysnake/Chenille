@@ -29,8 +29,9 @@ internal object ModrinthHelper {
         project.pluginManager.apply("com.modrinth.minotaur")
 
         project.extensions.configure(ModrinthExtension::class.java) {
-            if (project.hasProperty("modrinth_api_key")) {
-                token.set(project.findProperty("modrinth_api_key")!!.toString())
+            val modrinthApiKey = project.providers.gradleProperty("modrinth_api_key")
+            if (modrinthApiKey.isPresent) {
+                token.set(modrinthApiKey)
             } else {
                 project.logger.warn("Modrinth API Key not configured; please define the 'modrinth_api_key' user property before release")
                 return@configure

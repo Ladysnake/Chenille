@@ -39,7 +39,7 @@ class ChangelogText(project: ChenilleProject): Callable<CharSequence> {
         val changelogFile = project.extension.changelogFile.toPath()
 
         if (!changelogFile.exists()) {
-            println("No changelog file found, creating one at \"${changelogFile.absolute()}\"")
+            project.logger.lifecycle("No changelog file found, creating one at \"${changelogFile.absolute()}\"")
             try {
                 changelogFile.parent.createDirectories()
                 changelogFile.createFile()
@@ -60,7 +60,7 @@ class ChangelogText(project: ChenilleProject): Callable<CharSequence> {
                     """.trimMargin()
                 )
             } catch (e: IOException) {
-                println("Unable to write changelog file: " + e.message)
+                project.logger.lifecycle("Unable to write changelog file: " + e.message)
                 e.printStackTrace()
             }
             return@lazy ""

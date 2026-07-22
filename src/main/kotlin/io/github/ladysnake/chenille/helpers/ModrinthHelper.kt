@@ -80,7 +80,7 @@ internal object ModrinthHelper {
                 applyRelations("mr_embeddeds", DependencyType.EMBEDDED)
                 applyRelations("mr_incompatibles", DependencyType.INCOMPATIBLE)
             } else {
-                println("Modrinth Project ID not configured; please define the 'modrinth_id' project property before release")
+                project.logger.lifecycle("Modrinth Project ID not configured; please define the 'modrinth_id' project property before release")
             }
         }
     }

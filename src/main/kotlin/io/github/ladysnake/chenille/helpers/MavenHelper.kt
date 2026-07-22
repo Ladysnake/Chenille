@@ -53,7 +53,7 @@ internal object MavenHelper {
                             }
                         }
                     } else {
-                        println("Cannot configure Ladysnake Maven publication; please define ext.ladysnake_maven_username and ext.ladysnake_maven_password before running publish")
+                        project.logger.lifecycle("Cannot configure Ladysnake Maven publication; please define ext.ladysnake_maven_username and ext.ladysnake_maven_password before running publish")
                     }
                 }
             }

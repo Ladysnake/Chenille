@@ -51,7 +51,7 @@ internal object GithubReleaseHelper {
     fun extractRepositoryProperties(
             ext: GithubReleaseExtension, repositoryUrl: String, logger: Logger
     ): Boolean {
-        val matchResult = repositoryRegex.matchEntire(repositoryUrl) ?: return true
+        val matchResult = repositoryRegex.matchEntire(repositoryUrl) ?: error("Not a valid git URL $repositoryUrl")
         val host = matchResult.groups["host"]!!.value
         val repoOwner = matchResult.groups["owner"]!!.value
         val repoName = matchResult.groups["repo"]!!.value

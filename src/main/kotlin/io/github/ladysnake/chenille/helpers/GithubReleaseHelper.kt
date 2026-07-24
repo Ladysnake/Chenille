@@ -44,6 +44,9 @@ internal object GithubReleaseHelper {
             body = project.changelog.call().toString()
 
             setReleaseAssets(cfg.mainArtifact)
+
+            // dont complain about existing releases
+            allowUploadToExisting.convention(true)
         }
     }
 
